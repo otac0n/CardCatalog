@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CardCatalog.Models;
 
 namespace CardCatalog.Controllers
 {
@@ -10,8 +11,6 @@ namespace CardCatalog.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "Welcome to ASP.NET MVC!";
-
             return View();
         }
 
