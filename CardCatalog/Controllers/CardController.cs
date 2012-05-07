@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Net;
+using CardCatalog.Models;
 
 namespace CardCatalog.Controllers
 {
@@ -16,7 +17,31 @@ namespace CardCatalog.Controllers
 
         public ActionResult Details(int id)
         {
-            return View();
+            using (var session = MvcApplication.DocumentStore.OpenSession())
+            {
+                var card = session.Load<Card>(id);
+                var ownerships = (from o in session.Query<Ownership>()
+                                  where o.CardId == id
+                                  select o).ToList();
+
+                ViewBag.Ownerships = ownerships;
+                return View(card);
+            }
+        }
+
+        public ActionResult Add(int id)
+        {
+            string userName = this.User == null || string.IsNullOrWhiteSpace(this.User.Identity.Name)
+                ? null
+                : this.User.Identity.Name;
+
+            using (var session = MvcApplication.DocumentStore.OpenSession())
+            {
+                session.Store(new Ownership { CardId = id, Owner = userName });
+                session.SaveChanges();
+            }
+
+            return RedirectToAction("details", new { id });
         }
 
         public ActionResult Find(string q)

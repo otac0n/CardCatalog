@@ -3,6 +3,40 @@
 }
 
 <h2>Card Catalog</h2>
-<p>
-    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-</p>
+@using (Html.BeginForm("add", "card"))
+{
+    <p>
+        Add card <input id="search-box" /> <input type="hidden" id="id" name="id" />
+    </p>
+    <button type="submit">Add</button>
+}
+
+<script>
+    $(function () {
+        $("#search-box").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "@Url.Action("find", "card")",
+                    dataType: "json",
+                    data: { q: request.term },
+                    success: function (data) {
+                        response($.map(data.Results, function (item) {
+                            return {
+                                label: item.Name + " (" + item.Snippet + ")",
+                                id: item.ID,
+                                value: item.Name
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                $("#id").val(ui.item ? ui.item.id : "");
+            },
+            change: function (event, ui) {
+                $("#id").val(ui.item ? ui.item.id : "");
+            }
+        });
+    });
+</script>
