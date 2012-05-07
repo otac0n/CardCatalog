@@ -1,11 +1,14 @@
-﻿@using StackExchange.Profiling;
+﻿@* Required so you have extention methods for client timings *@
+@using StackExchange.Profiling;
 <!DOCTYPE html>
 <html>
 <head>
+    @* optional (enable client timing framework) *@ 
     @this.InitClientTimings()
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
 
+    @* optional time scripts in the header *@ 
     @this.TimeScript("Content Site.css", 
         @<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />)
     @this.TimeScript("jQuery 1.5.1", 
@@ -36,6 +39,7 @@
         <footer>
         </footer>
     </div>
+    @* Make sure you've added this one line to your LAYOUT or MASTER PAGE *@
     @MiniProfiler.RenderIncludes()
 </body>
 </html>

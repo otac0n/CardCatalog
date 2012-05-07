@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Raven.Client.Document;
+using System.Web.Configuration;
 
 namespace CardCatalog
 {
@@ -12,6 +14,8 @@ namespace CardCatalog
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static DocumentStore DocumentStore { get; private set; }
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -35,6 +39,13 @@ namespace CardCatalog
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+
+            DocumentStore = new DocumentStore
+            {
+                Url = WebConfigurationManager.ConnectionStrings["RavenDB"].ConnectionString,
+            };
+            DocumentStore.Initialize();
+            MvcMiniProfiler.RavenDb.Profiler.AttachTo(DocumentStore);
         }
     }
 }
