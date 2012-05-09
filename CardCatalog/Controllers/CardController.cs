@@ -103,10 +103,10 @@ namespace CardCatalog.Controllers
             var cardTextDivs = doc.DocumentNode.SelectNodes("//div[@class='label' and text()[contains(.,'Card Text:')]]/following-sibling::*[1]/div");
             foreach (HtmlNode div in cardTextDivs ?? Enumerable.Empty<HtmlNode>())
             {
-                var costImages = div.SelectNodes("./img");
+                var costImages = div.SelectNodes("./descendant::img");
                 foreach (HtmlNode img in costImages ?? Enumerable.Empty<HtmlNode>())
                 {
-                    div.ReplaceChild(doc.CreateTextNode(mapMana(img.Attributes["alt"].Value)), img);
+                    img.ParentNode.ReplaceChild(doc.CreateTextNode(mapMana(img.Attributes["alt"].Value)), img);
                 }
             }
 
