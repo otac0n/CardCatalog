@@ -1,0 +1,9 @@
+﻿@model CardCatalog.Models.Card
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(Model.Id)&type=card" />
