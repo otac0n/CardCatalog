@@ -11,7 +11,7 @@ namespace CardCatalog.Models
 
         public string Artist { get; set; }
 
-        public int? CardNumber { get; set; }
+        public string CardNumber { get; set; }
 
         public string[] CardText { get; set; }
 

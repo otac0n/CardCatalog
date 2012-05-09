@@ -100,6 +100,15 @@ namespace CardCatalog.Controllers
             var types = typesDiv == null ? null : HtmlEntity.DeEntitize(typesDiv.InnerText.Trim());
 
             var cardTextDivs = doc.DocumentNode.SelectNodes("//div[@class='label' and text()[contains(.,'Card Text:')]]/following-sibling::*[1]/div");
+            foreach (HtmlNode div in cardTextDivs ?? Enumerable.Empty<HtmlNode>())
+            {
+                var costImages = div.SelectNodes("./img");
+                foreach (HtmlNode img in costImages ?? Enumerable.Empty<HtmlNode>())
+                {
+                    div.ReplaceChild(doc.CreateTextNode(mapMana(img.Attributes["alt"].Value)), img);
+                }
+            }
+
             var cardText = cardTextDivs == null
                 ? null
                 : (from HtmlNode div in cardTextDivs
@@ -123,7 +132,7 @@ namespace CardCatalog.Controllers
             var rarity = raritySpan == null ? null : HtmlEntity.DeEntitize(raritySpan.Attributes["class"].Value);
 
             var cardNumberDiv = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Card #:')]]/following-sibling::*[1]");
-            var cardNumber = cardNumberDiv == null ? (int?)null : int.Parse(cardNumberDiv.InnerText.Trim());
+            var cardNumber = cardNumberDiv == null ? null : cardNumberDiv.InnerText.Trim();
 
             var artistAnchor = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Artist:')]]/following-sibling::*[1]/a");
             var artist = artistAnchor == null ? null : HtmlEntity.DeEntitize(artistAnchor.InnerText.Trim());
