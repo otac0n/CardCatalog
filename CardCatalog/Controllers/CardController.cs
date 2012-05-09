@@ -78,9 +78,10 @@ namespace CardCatalog.Controllers
             Func<string, string> mapMana = cost =>
                 cost == "Black" ? "{B}" :
                 cost == "Blue" ? "{U}" :
-                cost == "Red" ? "{R}" :
-                cost == "White" ? "{W}" :
                 cost == "Green" ? "{G}" :
+                cost == "Red" ? "{R}" :
+                cost == "Tap" ? "{T}" :
+                cost == "White" ? "{W}" :
                 "{" + cost + "}";
 
             var nameDiv = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Card Name:')]]/following-sibling::*[1]");
