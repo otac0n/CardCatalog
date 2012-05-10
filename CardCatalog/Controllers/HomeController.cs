@@ -11,12 +11,25 @@ namespace CardCatalog.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            using (var session = MvcApplication.DocumentStore.OpenSession())
+            {
+                var ownedCards = session.Query<OwnershipCount>("CardOwnershipCounts").ToList();
+
+                var cards = session.Load<Card>(ownedCards.Select(o => "cards/" + o.CardId));
+
+                return View(cards);
+            }
         }
 
         public ActionResult About()
         {
             return View();
+        }
+
+        private class OwnershipCount
+        {
+            public int CardId { get; set; }
+            public int Count { get; set; }
         }
     }
 }

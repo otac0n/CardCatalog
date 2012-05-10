@@ -1,5 +1,12 @@
-﻿@{
+﻿@model IList<CardCatalog.Models.Card>
+
+@{
     ViewBag.Title = "Home Page";
 }
 
 <h2>Card Catalog</h2>
+
+@foreach (var card in Model)
+{
+    <a href="@Url.Action("details", "card", new { id = card.Id })"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(card.Id)&type=card" /></a>
+}
