@@ -20,7 +20,9 @@ namespace CardCatalog.Controllers
         {
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var card = session.Load<Card>(id);
+                var card = (from c in session.Query<Card>()
+                            where c.FrontFace.Id == id || c.BackFace.Id == id
+                            select c).SingleOrDefault();
 
                 if (card == null)
                 {
@@ -29,6 +31,10 @@ namespace CardCatalog.Controllers
                     session.SaveChanges();
                 }
 
+                if (card.Id != id)
+                {
+                    return RedirectToActionPermanent("details", new { id = card.Id });
+                }
 
                 var ownerships = (from o in session.Query<Ownership>()
                                   where o.CardId == id
