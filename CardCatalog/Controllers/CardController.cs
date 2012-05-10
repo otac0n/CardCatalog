@@ -69,6 +69,7 @@ namespace CardCatalog.Controllers
 
             using (var client = new WebClient())
             {
+                client.Encoding = Encoding.UTF8;
                 return Content(client.DownloadString(url), "text/json");
             }
         }
