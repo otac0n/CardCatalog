@@ -3,16 +3,18 @@
 }
 
 <h2>Card Catalog</h2>
-@using (Html.BeginForm("add", "card"))
+@using (Html.BeginForm("details", "card"))
 {
     <p>
-        Add card <input id="search-box" /> <input type="hidden" id="id" name="id" />
+        Find a card <input id="search-box" /> <input type="hidden" id="id" name="id" /> <button type="button" id="go-button">Go</button>
     </p>
-    <button type="submit">Add</button>
 }
 
 <script>
     $(function () {
+        $("#go-button").click(function () {
+            window.location = '@Url.Action("details", "card", new { id = "_id_" })'.replace('_id_', $("#id").val());
+        });
         $("#search-box").autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -22,7 +24,8 @@
                     success: function (data) {
                         response($.map(data.Results, function (item) {
                             return {
-                                label: item.Name + " (" + item.Snippet + ")",
+                                label: item.Name,
+                                desc: item.Snippet,
                                 id: item.ID,
                                 value: item.Name
                             };
@@ -37,6 +40,12 @@
             change: function (event, ui) {
                 $("#id").val(ui.item ? ui.item.id : "");
             }
-        });
+        })
+        .data("autocomplete")._renderItem = function (ul, item) {
+            return $("<li></li>")
+                .data("item.autocomplete", item)
+                .append('<a>' + item.label + '<br><span style="font-size: 8pt;">' + item.desc + '</span></a>')
+                .appendTo(ul);
+        };;
     });
 </script>

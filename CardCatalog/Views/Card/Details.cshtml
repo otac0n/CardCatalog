@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = Model.FrontFace.Name + (Model.BackFace != null ? " / " + Model.BackFace.Name : "");
+    var ownerships = ViewBag.Ownerships as List<CardCatalog.Models.Ownership>;
 }
 
 <h2>@ViewBag.Title</h2>
@@ -10,3 +11,12 @@
 {
     <img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(face.Id)&type=card" />
 }
+
+<p>
+Owned: @ownerships.Count
+
+@using (Html.BeginForm("add", "card", new { id = Model.Id }))
+{
+    <input type="text" id="quantity" name="quantity" value="1" /> <button type="submit">Add</button>
+}
+</p>

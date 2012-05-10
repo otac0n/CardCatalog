@@ -45,7 +45,7 @@ namespace CardCatalog.Controllers
             }
         }
 
-        public ActionResult Add(int id)
+        public ActionResult Add(int id, int quantity)
         {
             string userName = this.User == null || string.IsNullOrWhiteSpace(this.User.Identity.Name)
                 ? null
@@ -53,7 +53,11 @@ namespace CardCatalog.Controllers
 
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                session.Store(new Ownership { CardId = id, Owner = userName });
+                for (int i = 0; i < quantity; i++)
+                {
+                    session.Store(new Ownership { CardId = id, Owner = userName });
+                }
+
                 session.SaveChanges();
             }
 
