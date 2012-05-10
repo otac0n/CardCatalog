@@ -34,6 +34,52 @@
             </nav>
         </header>
         <section id="main">
+<div style="float: right;">
+@using (Html.BeginForm("details", "card"))
+{
+    <text>Find a card <input id="search-box" /> <input type="hidden" id="id" name="id" /> <button type="button" id="go-button">Go</button></text>
+}
+</div>
+
+<script>
+    $(function () {
+        $("#go-button").click(function () {
+            window.location = '@Url.Action("details", "card", new { id = "_id_" })'.replace('_id_', $("#id").val());
+        });
+        $("#search-box").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "@Url.Action("find", "card")",
+                    dataType: "json",
+                    data: { q: request.term },
+                    success: function (data) {
+                        response($.map(data.Results, function (item) {
+                            return {
+                                label: item.Name,
+                                desc: item.Snippet,
+                                id: item.ID,
+                                value: item.Name
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                $("#id").val(ui.item ? ui.item.id : "");
+            },
+            change: function (event, ui) {
+                $("#id").val(ui.item ? ui.item.id : "");
+            }
+        })
+        .data("autocomplete")._renderItem = function (ul, item) {
+            return $("<li></li>")
+                .data("item.autocomplete", item)
+                .append('<a>' + item.label + '<br><span style="font-size: 8pt;">' + item.desc + '</span></a>')
+                .appendTo(ul);
+        };;
+    });
+</script>
             @RenderBody()
         </section>
         <footer>
