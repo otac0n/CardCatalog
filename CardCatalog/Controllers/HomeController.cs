@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CardCatalog.Models;
+using CardCatalog.Models.Indexes;
 
 namespace CardCatalog.Controllers
 {
@@ -13,7 +14,7 @@ namespace CardCatalog.Controllers
         {
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var ownedCards = session.Query<OwnershipCount>("CardOwnershipCounts").ToList();
+                var ownedCards = session.Query<CardOwnershipCount.Result>(typeof(CardOwnershipCount).Name).ToList();
 
                 var cards = session.Load<Card>(ownedCards.Select(o => "cards/" + o.CardId));
 
@@ -24,12 +25,6 @@ namespace CardCatalog.Controllers
         public ActionResult About()
         {
             return View();
-        }
-
-        private class OwnershipCount
-        {
-            public int CardId { get; set; }
-            public int Count { get; set; }
         }
     }
 }

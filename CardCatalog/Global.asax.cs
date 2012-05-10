@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Raven.Client.Document;
-using System.Web.Configuration;
+using Raven.Client.Indexes;
 
 namespace CardCatalog
 {
@@ -30,7 +31,6 @@ namespace CardCatalog
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
-
         }
 
         protected void Application_Start()
@@ -45,6 +45,7 @@ namespace CardCatalog
                 Url = WebConfigurationManager.ConnectionStrings["RavenDB"].ConnectionString,
             };
             DocumentStore.Initialize();
+            IndexCreation.CreateIndexes(typeof(MvcApplication).Assembly, DocumentStore);
             MvcMiniProfiler.RavenDb.Profiler.AttachTo(DocumentStore);
         }
     }
