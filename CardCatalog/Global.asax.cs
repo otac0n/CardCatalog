@@ -42,7 +42,7 @@ namespace CardCatalog
 
             DocumentStore = new DocumentStore
             {
-                Url = WebConfigurationManager.ConnectionStrings["RavenDB"].ConnectionString,
+                ConnectionStringName = "RavenDB",
             };
             DocumentStore.Initialize();
             IndexCreation.CreateIndexes(typeof(MvcApplication).Assembly, DocumentStore);
