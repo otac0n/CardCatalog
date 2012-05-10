@@ -1,9 +1,12 @@
 ﻿@model CardCatalog.Models.Card
 
 @{
-    ViewBag.Title = Model.Name;
+    ViewBag.Title = Model.FrontFace.Name + (Model.BackFace != null ? " / " + Model.BackFace.Name : "");
 }
 
 <h2>@ViewBag.Title</h2>
 
-<img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(Model.Id)&type=card" />
+@foreach (var face in new[] { Model.FrontFace, Model.BackFace }.Where(f => f != null))
+{
+    <img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(face.Id)&type=card" />
+}

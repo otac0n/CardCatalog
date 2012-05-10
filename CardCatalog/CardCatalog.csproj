@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\CardFace.cs" />
     <Compile Include="Models\Ownership.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
