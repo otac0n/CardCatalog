@@ -128,6 +128,11 @@ namespace CardCatalog.Controllers
                 cost == "Green" ? "{G}" :
                 cost == "Green or Blue" ? "{GU}" :
                 cost == "Green or White" ? "{GW}" :
+                cost == "Phyrexian Black" ? "{BP}" :
+                cost == "Phyrexian Blue" ? "{UP}" :
+                cost == "Phyrexian Green" ? "{GP}" :
+                cost == "Phyrexian Red" ? "{RP}" :
+                cost == "Phyrexian White" ? "{WP}" :
                 cost == "Red" ? "{R}" :
                 cost == "Red or Green" ? "{RG}" :
                 cost == "Red or White" ? "{RW}" :
