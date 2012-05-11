@@ -184,6 +184,11 @@ namespace CardCatalog.Controllers
             var power = pt == null ? null : pt[0].Trim();
             var toughness = pt == null ? null : pt[1].Trim();
 
+            var hlDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Hand/Life:')]]/following-sibling::*[1]");
+            var hl = hlDiv == null ? null : Regex.Match(HtmlEntity.DeEntitize(hlDiv.InnerText), @"\(Hand Modifier: (?<hand>.+) , Life Modifier: (?<life>.+)\)");
+            var hand = hl == null ? null : hl.Groups["hand"].Value;
+            var life = hl == null ? null : hl.Groups["life"].Value;
+
             var cardNumberDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Card #:')]]/following-sibling::*[1]");
             var cardNumber = cardNumberDiv == null ? null : cardNumberDiv.InnerText.Trim();
 
@@ -198,6 +203,8 @@ namespace CardCatalog.Controllers
                 CardText = cardText,
                 ConvertedManaCost = convertedMana,
                 FlavorText = flavorText,
+                Hand = hand,
+                Life = life,
                 ManaCost = mana,
                 Name = name,
                 Power = power,

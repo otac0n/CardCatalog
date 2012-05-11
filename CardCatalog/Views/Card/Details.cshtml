@@ -86,6 +86,12 @@
                     <dd>@face.Power/@face.Toughness</dd>
                 }
 
+                @if (face.Hand != null)
+                {
+                    <dt>Modifiers:</dt>
+                    <dd>Hand @face.Hand, Life @face.Life</dd>
+                }
+
                 @if (face.Artist != null)
                 {
                     <dt>Artist:</dt>

@@ -19,6 +19,10 @@ namespace CardCatalog.Models
 
         public string[] FlavorText { get; set; }
 
+        public string Hand { get; set; }
+
+        public string Life { get; set; }
+
         public string ManaCost { get; set; }
 
         public string Name { get; set; }
