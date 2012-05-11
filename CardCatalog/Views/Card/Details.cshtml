@@ -5,11 +5,81 @@
     var ownerships = ViewBag.Ownerships as List<CardCatalog.Models.Ownership>;
 }
 
+<style>
+    .card-face { display: table; }
+    .card-face-image { display: table-cell; padding-right: 22px; }
+    .card-face-image img { vertical-align: top; }
+    .card-face-properties { display: table-cell; width: 315px; }
+    dl p { margin: 0; line-height: normal; }
+    dd { margin-bottom: 10px; }
+    .card-face-text { margin: 0 0 5px 0; }
+</style>
+
 <h2>@ViewBag.Title</h2>
+
+<dl>
+    <dt>Expansion:</dt>
+    <dd>@Model.Expansion</dd>
+
+    <dt>Rarity:</dt>
+    <dd>@Model.Rarity</dd>
+</dl>
 
 @foreach (var face in new[] { Model.FrontFace, Model.BackFace }.Where(f => f != null))
 {
-    <img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(face.Id)&type=card" />
+    <fieldset class="card-face">
+        <legend class="card-face-name">@face.Name</legend>
+        <figure class="card-face-image"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(face.Id)&type=card" /></figure>
+        <section class="card-face-properties">
+            <dl>
+                @if (face.ManaCost != null)
+                {
+                    <dt>Mana Cost:</dt>
+                    <dd>@face.ManaCost</dd>
+                }
+
+                @if (face.Types != null)
+                {
+                    <dt>Types:</dt>
+                    <dd>@face.Types</dd>
+                }
+
+                @if (face.CardText != null || face.FlavorText != null)
+                {
+                    <dt>Card Text:</dt>
+                    <dd>
+                        @if (face.CardText != null || face.FlavorText != null)
+                        {
+                            foreach (var line in face.CardText)
+                            {
+                                <p class="card-face-text">@line</p>
+                            }
+                        }
+
+                        @if (face.FlavorText != null)
+                        {
+                            foreach (var line in face.FlavorText)
+                            {
+                                <p class="card-face-flavor-text"><em>@line</em></p>
+                            }
+                        }
+                    </dd>
+                }
+
+                @if (face.Power != null)
+                {
+                    <dt>Combat:</dt>
+                    <dd>@face.Power / @face.Toughness</dd>
+                }
+
+                @if (face.Artist != null)
+                {
+                    <dt>Artist:</dt>
+                    <dd>@face.Artist</dd>
+                }
+            </dl>
+        </section>
+    </fieldset>
 }
 
 <p>
