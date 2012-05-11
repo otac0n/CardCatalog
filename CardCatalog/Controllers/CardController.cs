@@ -120,11 +120,23 @@ namespace CardCatalog.Controllers
 
             Func<string, string> mapMana = cost =>
                 cost == "Black" ? "{B}" :
+                cost == "Black or Green" ? "{BG}" :
+                cost == "Black or Red" ? "{BR}" :
                 cost == "Blue" ? "{U}" :
+                cost == "Blue or Black" ? "{UB}" :
+                cost == "Blue or Red" ? "{UR}" :
                 cost == "Green" ? "{G}" :
+                cost == "Green or Blue" ? "{GU}" :
+                cost == "Green or White" ? "{GW}" :
                 cost == "Red" ? "{R}" :
+                cost == "Red or Green" ? "{RG}" :
+                cost == "Red or White" ? "{RW}" :
+                cost == "Snow" ? "{S}" :
                 cost == "Tap" ? "{T}" :
+                cost == "Variable Colorless" ? "{X}" :
                 cost == "White" ? "{W}" :
+                cost == "White or Black" ? "{WB}" :
+                cost == "White or Blue" ? "{WU}" :
                 "{" + cost + "}";
 
             var cardImage = node.SelectSingleNode("./descendant::img[1]");
