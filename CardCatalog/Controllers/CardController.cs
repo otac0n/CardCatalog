@@ -176,7 +176,12 @@ namespace CardCatalog.Controllers
             var cardText = cardTextDivs == null
                 ? null
                 : (from HtmlNode div in cardTextDivs
-                   select HtmlEntity.DeEntitize(div.InnerText)).ToArray();
+                   let text = HtmlEntity.DeEntitize(div.InnerText)
+                   let fixedText = Regex.Replace(
+                       text,
+                       @"(?:\b|\G)(?:o(?:(?<name>[0-9X])|o?(?<name>[BUGRW])|c(?<name>[T]))|(?<name>[0-9XBUGRWT])(?=o(?:[0-9X]|o?[BUGRW]|c[T])))",
+                       "{${name}}")
+                   select fixedText).ToArray();
 
             var flavorTextDivs = node.SelectNodes("./descendant::div[@class='label' and text()[contains(.,'Flavor Text:')]]/following-sibling::*[1]/div");
             var flavorText = flavorTextDivs == null
@@ -185,7 +190,7 @@ namespace CardCatalog.Controllers
                    select HtmlEntity.DeEntitize(div.InnerText)).ToArray();
 
             var ptDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'P/T:')]]/following-sibling::*[1]");
-            var pt = ptDiv == null ? null : ptDiv.InnerText.Split('/');
+            var pt = ptDiv == null ? null : HtmlEntity.DeEntitize(ptDiv.InnerText).Trim().Replace("{1/2}", "½").Split('/');
             var power = pt == null ? null : pt[0].Trim();
             var toughness = pt == null ? null : pt[1].Trim();
 
