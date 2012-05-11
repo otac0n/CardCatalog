@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CardCatalog.Models;
 using HtmlAgilityPack;
+using Raven.Client.Linq;
 
 namespace CardCatalog.Controllers
 {
@@ -38,7 +39,9 @@ namespace CardCatalog.Controllers
 
                 var ownerships = (from o in session.Query<Ownership>()
                                   where o.CardId == id
-                                  select o).ToList();
+                                  select o)
+                                 .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite())
+                                 .ToList();
 
                 ViewBag.Ownerships = ownerships;
                 return View(card);
