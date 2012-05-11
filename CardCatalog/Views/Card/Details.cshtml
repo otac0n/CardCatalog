@@ -23,6 +23,20 @@
 
     <dt>Rarity:</dt>
     <dd>@Model.Rarity</dd>
+
+    @{
+        var cardNumbers =
+            new[] { Model.FrontFace, Model.BackFace }
+            .Where(f => f != null)
+            .Select(f => f.CardNumber)
+            .Where(n => n != null)
+            .ToList();
+    }
+    @if (cardNumbers.Count > 0)
+    {
+        <dt>Card Number:</dt>
+        <dd>@string.Join(", ", cardNumbers)</dd>
+    }
 </dl>
 
 @foreach (var face in new[] { Model.FrontFace, Model.BackFace }.Where(f => f != null))
@@ -69,7 +83,7 @@
                 @if (face.Power != null)
                 {
                     <dt>Combat:</dt>
-                    <dd>@face.Power / @face.Toughness</dd>
+                    <dd>@face.Power/@face.Toughness</dd>
                 }
 
                 @if (face.Artist != null)
