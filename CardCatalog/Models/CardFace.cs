@@ -23,6 +23,8 @@ namespace CardCatalog.Models
 
         public string Life { get; set; }
 
+        public int? Loyalty { get; set; }
+
         public string ManaCost { get; set; }
 
         public string Name { get; set; }

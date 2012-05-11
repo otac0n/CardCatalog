@@ -92,6 +92,12 @@
                     <dd>Hand @face.Hand, Life @face.Life</dd>
                 }
 
+                @if (face.Loyalty != null)
+                {
+                    <dt>Loyalty:</dt>
+                    <dd>@face.Loyalty</dd>
+                }
+
                 @if (face.Artist != null)
                 {
                     <dt>Artist:</dt>

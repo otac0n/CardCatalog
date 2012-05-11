@@ -194,6 +194,9 @@ namespace CardCatalog.Controllers
             var hand = hl == null ? null : hl.Groups["hand"].Value;
             var life = hl == null ? null : hl.Groups["life"].Value;
 
+            var loyaltyDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Loyalty:')]]/following-sibling::*[1]");
+            var loyalty = loyaltyDiv == null ? (int?)null : int.Parse(loyaltyDiv.InnerText.Trim());
+
             var cardNumberDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Card #:')]]/following-sibling::*[1]");
             var cardNumber = cardNumberDiv == null ? null : cardNumberDiv.InnerText.Trim();
 
@@ -210,6 +213,7 @@ namespace CardCatalog.Controllers
                 FlavorText = flavorText,
                 Hand = hand,
                 Life = life,
+                Loyalty = loyalty,
                 ManaCost = mana,
                 Name = name,
                 Power = power,
