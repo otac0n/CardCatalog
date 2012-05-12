@@ -13,8 +13,6 @@ namespace CardCatalog.Models
 
         public string Rarity { get; set; }
 
-        public CardFace FrontFace { get; set; }
-
-        public CardFace BackFace { get; set; }
+        public List<CardFace> NormalizedFaces { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace CardCatalog
 
             // First, try to fetch the card from the database.
             var card = (from c in session.Query<Card>()
-                        where c.FrontFace.Id == id || c.BackFace.Id == id
+                        where c.NormalizedFaces.Any(f => f.Id == id)
                         select c).SingleOrDefault();
 
             // If the card is missing, fetch and save it.
@@ -78,25 +78,21 @@ namespace CardCatalog
                 return null;
             }
 
-            var frontFaceNode = cardFaceNodes.First();
-            var backFaceNode = cardFaceNodes.Skip(1).FirstOrDefault();
-
-            var expansionAnchor = frontFaceNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Expansion:')]]/following-sibling::*[1]/div/a[2]");
+            var expansionAnchor = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Expansion:')]]/following-sibling::*[1]/div/a[2]");
             var expansion = expansionAnchor == null ? null : HtmlEntity.DeEntitize(expansionAnchor.InnerText.Trim());
 
-            var raritySpan = frontFaceNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Rarity:')]]/following-sibling::*[1]/span");
+            var raritySpan = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Rarity:')]]/following-sibling::*[1]/span");
             var rarity = raritySpan == null ? null : HtmlEntity.DeEntitize(raritySpan.Attributes["class"].Value);
 
-            var frontFace = ReadFace(frontFaceNode);
-            var backFace = ReadFace(backFaceNode);
+            var faces = (from HtmlNode faceNode in cardFaceNodes
+                         select ReadFace(faceNode)).ToList();
 
             return new Card
             {
-                Id = frontFace.Id,
+                Id = faces.First().Id,
                 Expansion = expansion,
                 Rarity = rarity,
-                FrontFace = frontFace,
-                BackFace = backFace,
+                NormalizedFaces = faces,
             };
         }
 
