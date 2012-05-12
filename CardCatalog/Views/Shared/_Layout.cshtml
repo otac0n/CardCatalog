@@ -81,7 +81,7 @@
                 .appendTo(ul);
         };;
         $(document).bind('keyup.s', function () {
-            $("#search-box").focus(); return false;
+            $("#search-box").focus().select(); return false;
         });
     });
 </script>
