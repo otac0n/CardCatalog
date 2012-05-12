@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Raven.Client;
 using Intervals;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace CardCatalog
 {
@@ -19,6 +20,14 @@ namespace CardCatalog
 
         public static Card ReadOrScrapeCard(this IDocumentSession session, int id)
         {
+            bool ignore;
+            return ReadOrScrapeCard(session, id, out ignore);
+        }
+
+        public static Card ReadOrScrapeCard(this IDocumentSession session, int id, out bool previouslyScraped)
+        {
+            previouslyScraped = true;
+
             // First, try to fetch the card from the database.
             var card = (from c in session.Query<Card>()
                         where c.FrontFace.Id == id || c.BackFace.Id == id
@@ -32,6 +41,7 @@ namespace CardCatalog
                     return null;
                 }
 
+                previouslyScraped = false;
                 card = CardUtilities.ScrapeCard(id);
 
                 UsingFetchState(fetchState =>
@@ -300,6 +310,7 @@ namespace CardCatalog
 
         public class BackgroundScraper
         {
+            private static readonly TimeSpan MinScrapeTimeSpan = TimeSpan.FromSeconds(6);
             private int highestCardAdded = 0;
             private readonly List<int> cardsToCheck = new List<int>();
             private readonly Random rand = new Random();
@@ -324,9 +335,22 @@ namespace CardCatalog
                 var ix = rand.Next(cardsToCheck.Count);
                 var id = cardsToCheck[ix];
 
-                System.Diagnostics.Debug.WriteLine(string.Format("Background task fired for card {0}.", id));
+                bool previouslyScraped;
+                Debug.WriteLine(string.Format("Background task fired for card {0}.", id));
+                using (var session = MvcApplication.DocumentStore.OpenSession())
+                {
+                    session.ReadOrScrapeCard(id, out previouslyScraped);
+                }
+
                 cardsToCheck.RemoveAt(ix);
-                return TimeSpan.Zero;
+                if (previouslyScraped)
+                {
+                    return TimeSpan.Zero;
+                }
+                else
+                {
+                    return MinScrapeTimeSpan;
+                }
             }
         }
     }
