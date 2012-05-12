@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Configuration;
+using System.Threading;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Raven.Client.Document;
@@ -16,6 +13,8 @@ namespace CardCatalog
     public class MvcApplication : System.Web.HttpApplication
     {
         public static DocumentStore DocumentStore { get; private set; }
+
+        private static CancellationTokenSource backgroundCancellation;
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
@@ -47,6 +46,17 @@ namespace CardCatalog
             DocumentStore.Initialize();
             IndexCreation.CreateIndexes(typeof(MvcApplication).Assembly, DocumentStore);
             MvcMiniProfiler.RavenDb.Profiler.AttachTo(DocumentStore);
+
+            backgroundCancellation = RepeatingBackgroundTask.Start(TimeSpan.FromSeconds(10), () =>
+            {
+                System.Diagnostics.Debug.WriteLine("Background task fired.");
+                return TimeSpan.FromSeconds(10);
+            });
+        }
+
+        protected void Application_Stop()
+        {
+            backgroundCancellation.Cancel();
         }
     }
 }
