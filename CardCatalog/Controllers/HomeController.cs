@@ -14,7 +14,7 @@ namespace CardCatalog.Controllers
         {
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var ownedCards = session.Query<CardOwnershipCount.Result>(typeof(CardOwnershipCount).Name).ToList();
+                var ownedCards = session.Query<CardOwnershipCount.Result, CardOwnershipCount>().ToList();
 
                 var cards = session.Load<Card>(ownedCards.Select(o => "cards/" + o.CardId));
 
