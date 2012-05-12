@@ -8,11 +8,14 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using Raven.Client;
+using Intervals;
 
 namespace CardCatalog
 {
     public static class CardUtilities
     {
+        private static readonly object fetchStateMutex = new object();
+
         public static Card ReadOrScrapeCard(this IDocumentSession session, int id)
         {
             // First, try to fetch the card from the database.
@@ -24,6 +27,19 @@ namespace CardCatalog
             if (card == null)
             {
                 card = CardUtilities.ScrapeCard(id);
+
+                UsingFetchState(fetchState =>
+                {
+                    if (card == null)
+                    {
+                        fetchState.AddMissingCard(id);
+                    }
+                    else
+                    {
+                        fetchState.UpdateHighestKnown(id);
+                    }
+                });
+
                 session.Store(card);
                 session.SaveChanges();
             }
@@ -179,6 +195,83 @@ namespace CardCatalog
                 Toughness = toughness,
                 Types = types,
             };
+        }
+
+        private static void UsingFetchState(Action<FetchState> action)
+        {
+            lock (fetchStateMutex)
+            {
+                using (var session = MvcApplication.DocumentStore.OpenSession())
+                {
+                    var fetchState = session.Load<FetchState>("current");
+                    if (fetchState == null)
+                    {
+                        fetchState = new FetchState();
+                        session.Store(fetchState, "current");
+                    }
+
+                    action(fetchState);
+
+                    session.SaveChanges();
+                }
+            }
+        }
+
+        private class FetchState
+        {
+            public FetchState()
+            {
+                this.MissingCardRanges = new List<CardRange>();
+            }
+
+            public int HighestKnownCard { get; set; }
+
+            public List<CardRange> MissingCardRanges { get; set; }
+
+            public void UpdateHighestKnown(int id)
+            {
+                if (this.HighestKnownCard < id)
+                {
+                    this.HighestKnownCard = id;
+                }
+            }
+
+            public void AddMissingCard(int id)
+            {
+                this.MissingCardRanges =
+                    this.MissingCardRanges
+                    .Cast<IInterval<int>>()
+                    .UnionWith(new CardRange { Start = id, End = id + 1 })
+                    .Cast<CardRange>()
+                    .ToList();
+            }
+
+            public bool IsCardMissing(int id)
+            {
+                return this.MissingCardRanges.Cast<IInterval<int>>().Contains(id);
+            }
+
+            public class CardRange : IInterval<int>
+            {
+                public IInterval<int> Clone(int start, bool startInclusive, int end, bool endInclusive)
+                {
+                    return new CardRange { Start = start, End = end };
+                }
+
+                public int Start { get; set; }
+
+                public int End { get; set; }
+
+                bool IInterval<int>.StartInclusive
+                {
+                    get { return true; }
+                }
+
+                bool IInterval<int>.EndInclusive
+                {
+                    get { return false; }
+                }
+            }
         }
     }
 }
