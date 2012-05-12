@@ -64,35 +64,42 @@ namespace CardCatalog
 
         public static Card ScrapeCard(int id)
         {
-            var doc = new HtmlDocument();
+            var normalizedDoc = new HtmlDocument();
+            var printedDoc = new HtmlDocument();
             using (var client = new WebClient())
             {
                 client.Encoding = Encoding.UTF8;
-                var html = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + id);
-                doc.LoadHtml(html);
+                var normalizedHtml = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + id);
+                var printedHtml = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=tru&multiverseid=" + id);
+                normalizedDoc.LoadHtml(normalizedHtml);
+                printedDoc.LoadHtml(printedHtml);
             }
 
-            var cardFaceNodes = doc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]");
-            if (cardFaceNodes == null)
+            var normalizedFaceNodes = normalizedDoc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]");
+            var printedFaceNodes = printedDoc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]");
+            if (normalizedFaceNodes == null)
             {
                 return null;
             }
 
-            var expansionAnchor = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Expansion:')]]/following-sibling::*[1]/div/a[2]");
+            var expansionAnchor = normalizedDoc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Expansion:')]]/following-sibling::*[1]/div/a[2]");
             var expansion = expansionAnchor == null ? null : HtmlEntity.DeEntitize(expansionAnchor.InnerText.Trim());
 
-            var raritySpan = doc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Rarity:')]]/following-sibling::*[1]/span");
+            var raritySpan = normalizedDoc.DocumentNode.SelectSingleNode("//div[@class='label' and text()[contains(.,'Rarity:')]]/following-sibling::*[1]/span");
             var rarity = raritySpan == null ? null : HtmlEntity.DeEntitize(raritySpan.Attributes["class"].Value);
 
-            var faces = (from HtmlNode faceNode in cardFaceNodes
-                         select ReadFace(faceNode)).ToList();
+            var normalizedFaces = (from HtmlNode faceNode in normalizedFaceNodes
+                                   select ReadFace(faceNode)).ToList();
+            var printedFaces = (from HtmlNode faceNode in printedFaceNodes
+                                select ReadFace(faceNode)).ToList();
 
             return new Card
             {
-                Id = faces.First().Id,
+                Id = normalizedFaces.First().Id,
                 Expansion = expansion,
                 Rarity = rarity,
-                NormalizedFaces = faces,
+                NormalizedFaces = normalizedFaces,
+                PrintedFaces = printedFaces,
             };
         }
 

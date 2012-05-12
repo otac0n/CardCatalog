@@ -14,5 +14,7 @@ namespace CardCatalog.Models
         public string Rarity { get; set; }
 
         public List<CardFace> NormalizedFaces { get; set; }
+
+        public List<CardFace> PrintedFaces { get; set; }
     }
 }
