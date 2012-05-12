@@ -141,7 +141,7 @@ namespace CardCatalog
             var id = int.Parse(Regex.Match(cardImage.Attributes["src"].Value, @"multiverseid=(?<id>\d+)").Groups["id"].Value);
 
             var nameDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Card Name:')]]/following-sibling::*[1]");
-            var name = HtmlEntity.DeEntitize(nameDiv.InnerText.Trim());
+            var name = HtmlEntity.DeEntitize(nameDiv.InnerText).Trim();
 
             var manaImages = node.SelectNodes("./descendant::div[@class='label' and text()[contains(.,'Mana Cost:')]]/following-sibling::*[1]/img");
             var mana = manaImages == null
@@ -154,7 +154,7 @@ namespace CardCatalog
             var convertedMana = convertedManaDiv == null ? (int?)null : int.Parse(convertedManaDiv.InnerText.Trim());
 
             var typesDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Types:')]]/following-sibling::*[1]");
-            var types = typesDiv == null ? null : HtmlEntity.DeEntitize(typesDiv.InnerText.Trim());
+            var types = typesDiv == null ? null : Regex.Replace(HtmlEntity.DeEntitize(typesDiv.InnerText).Trim(), @"\s+", " ");
 
             var cardTextDivs = node.SelectNodes("./descendant::div[@class='label' and text()[contains(.,'Card Text:')]]/following-sibling::*[1]/div");
             foreach (HtmlNode div in cardTextDivs ?? Enumerable.Empty<HtmlNode>())
