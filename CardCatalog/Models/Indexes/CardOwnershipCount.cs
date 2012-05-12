@@ -28,7 +28,7 @@ namespace CardCatalog.Models.Indexes
 
         public class Result
         {
-            public int CardId { get; set; }
+            public string CardId { get; set; }
 
             public int Count { get; set; }
         }

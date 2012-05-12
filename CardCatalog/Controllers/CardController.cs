@@ -37,8 +37,9 @@ namespace CardCatalog.Controllers
                     return RedirectToActionPermanent("details", new { id = card.Id });
                 }
 
+                var cardId = "cards/" + id;
                 var ownerships = (from o in session.Query<Ownership>()
-                                  where o.CardId == id
+                                  where o.CardId == cardId
                                   select o)
                                  .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite())
                                  .ToList();
@@ -56,9 +57,10 @@ namespace CardCatalog.Controllers
 
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
+                var cardId = "cards/" + id;
                 for (int i = 0; i < quantity; i++)
                 {
-                    session.Store(new Ownership { CardId = id, Owner = userName });
+                    session.Store(new Ownership { CardId = cardId, Owner = userName });
                 }
 
                 session.SaveChanges();
