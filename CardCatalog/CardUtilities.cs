@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Raven.Client;
 using Intervals;
+using Newtonsoft.Json;
 
 namespace CardCatalog
 {
@@ -26,6 +27,11 @@ namespace CardCatalog
             // If the card is missing, fetch and save it.
             if (card == null)
             {
+                if (UsingFetchState(fetchState => fetchState.IsCardMissing(id)))
+                {
+                    return null;
+                }
+
                 card = CardUtilities.ScrapeCard(id);
 
                 UsingFetchState(fetchState =>
@@ -40,8 +46,11 @@ namespace CardCatalog
                     }
                 });
 
-                session.Store(card);
-                session.SaveChanges();
+                if (card != null)
+                {
+                    session.Store(card);
+                    session.SaveChanges();
+                }
             }
 
             return card;
@@ -57,7 +66,12 @@ namespace CardCatalog
                 doc.LoadHtml(html);
             }
 
-            var cardFaceNodes = doc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]").ToArray();
+            var cardFaceNodes = doc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]");
+            if (cardFaceNodes == null)
+            {
+                return null;
+            }
+
             var frontFaceNode = cardFaceNodes.First();
             var backFaceNode = cardFaceNodes.Skip(1).FirstOrDefault();
 
@@ -197,8 +211,9 @@ namespace CardCatalog
             };
         }
 
-        private static void UsingFetchState(Action<FetchState> action)
+        private static T UsingFetchState<T>(Func<FetchState, T> func)
         {
+            T result;
             lock (fetchStateMutex)
             {
                 using (var session = MvcApplication.DocumentStore.OpenSession())
@@ -210,11 +225,18 @@ namespace CardCatalog
                         session.Store(fetchState, "current");
                     }
 
-                    action(fetchState);
+                    result = func(fetchState);
 
                     session.SaveChanges();
                 }
             }
+
+            return result;
+        }
+
+        private static void UsingFetchState(Action<FetchState> action)
+        {
+            var ignore = UsingFetchState(fetchState => { action(fetchState); return true; });
         }
 
         private class FetchState
@@ -262,11 +284,13 @@ namespace CardCatalog
 
                 public int End { get; set; }
 
+                [JsonIgnore]
                 bool IInterval<int>.StartInclusive
                 {
                     get { return true; }
                 }
 
+                [JsonIgnore]
                 bool IInterval<int>.EndInclusive
                 {
                     get { return false; }

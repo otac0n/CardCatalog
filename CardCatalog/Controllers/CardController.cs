@@ -21,6 +21,11 @@ namespace CardCatalog.Controllers
             {
                 var card = session.ReadOrScrapeCard(id);
 
+                if (card == null)
+                {
+                    return HttpNotFound();
+                }
+
                 if (card.Id != id)
                 {
                     return RedirectToActionPermanent("details", new { id = card.Id });
