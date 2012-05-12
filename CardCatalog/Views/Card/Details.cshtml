@@ -1,7 +1,7 @@
 ﻿@model CardCatalog.Models.Card
 
 @{
-    ViewBag.Title = string.Join(" / ", Model.NormalizedFaces);
+    ViewBag.Title = string.Join(" / ", Model.NormalizedFaces.Select(f => f.Name));
     var ownerships = ViewBag.Ownerships as List<CardCatalog.Models.Ownership>;
 }
 
