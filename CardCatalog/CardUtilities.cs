@@ -42,7 +42,8 @@ namespace CardCatalog
                 }
 
                 previouslyScraped = false;
-                card = CardUtilities.ScrapeCard(id);
+                int highestId;
+                card = CardUtilities.ScrapeCard(id, out highestId);
 
                 UsingFetchState(fetchState =>
                 {
@@ -50,10 +51,8 @@ namespace CardCatalog
                     {
                         fetchState.AddMissingCard(id);
                     }
-                    else
-                    {
-                        fetchState.UpdateHighestKnown(id);
-                    }
+
+                    fetchState.UpdateHighestKnown(highestId);
                 });
 
                 if (card != null)
@@ -66,7 +65,7 @@ namespace CardCatalog
             return card;
         }
 
-        public static Card ScrapeCard(int id)
+        public static Card ScrapeCard(int id, out int highestId)
         {
             var doc = new HtmlDocument();
             using (var client = new WebClient())
@@ -74,6 +73,11 @@ namespace CardCatalog
                 client.Encoding = Encoding.UTF8;
                 var html = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + id);
                 doc.LoadHtml(html);
+
+                highestId = (from Match m in Regex.Matches(html, @"multiverseid=(?<id>\d+)")
+                             let v = int.Parse(m.Groups["id"].Value)
+                             orderby v descending
+                             select v).FirstOrDefault();
             }
 
             var cardFaceNodes = doc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]");
