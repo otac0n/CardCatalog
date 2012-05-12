@@ -6,18 +6,22 @@
 }
 
 <style>
-    .card-face { display: table; }
+    .card-info dt, .card-info dd { display: inline; }
+    .card-info dd { margin: 0 20px 0 0; }
+    .card-face { display: table; float: left; border: none; }
     .card-face-image { display: table-cell; padding-right: 22px; }
     .card-face-image img { vertical-align: top; }
     .card-face-properties { display: table-cell; width: 315px; }
     dl p { margin: 0; line-height: normal; }
     dd { margin-bottom: 10px; }
+    dt { font-weight: bold; }
     .card-face-text { margin: 0 0 5px 0; }
+    .card-ownership { clear: both; }
 </style>
 
 <h2>@ViewBag.Title</h2>
 
-<dl>
+<dl class="card-info">
     <dt>Expansion:</dt>
     <dd>@Model.Expansion</dd>
 
@@ -34,7 +38,7 @@
     }
     @if (cardNumbers.Count > 0)
     {
-        <dt>Card Number:</dt>
+        <dt>Card Number@(cardNumbers.Count > 1 ? "s" : ""):</dt>
         <dd>@string.Join(", ", cardNumbers)</dd>
     }
 </dl>
@@ -108,14 +112,14 @@
     </fieldset>
 }
 
-<p>
+<div class="card-ownership">
 Owned: @ownerships.Count
 
 @using (Html.BeginForm("add", "card", new { id = Model.Id }))
 {
     <input type="text" id="quantity" name="quantity" value="1" /> <button type="submit">Add</button>
 }
-</p>
+</div>
 
 <script>
     $(document).bind('keyup.a', function () {
