@@ -318,6 +318,7 @@ namespace CardCatalog
             private int highestCardAdded = 0;
             private readonly List<int> cardsToCheck = new List<int>();
             private readonly Random rand = new Random();
+            private int errorCount;
 
             public TimeSpan? ScrapeSingle()
             {
@@ -339,20 +340,30 @@ namespace CardCatalog
                 var ix = rand.Next(cardsToCheck.Count);
                 var id = cardsToCheck[ix];
 
-                bool previouslyScraped;
-                using (var session = MvcApplication.DocumentStore.OpenSession())
+                try
                 {
-                    session.ReadOrScrapeCard(id, out previouslyScraped);
-                }
+                    bool previouslyScraped;
+                    using (var session = MvcApplication.DocumentStore.OpenSession())
+                    {
+                        session.ReadOrScrapeCard(id, out previouslyScraped);
+                    }
 
-                cardsToCheck.RemoveAt(ix);
-                if (previouslyScraped)
-                {
-                    return TimeSpan.Zero;
+                    this.errorCount = 0;
+                    cardsToCheck.RemoveAt(ix);
+                    if (previouslyScraped)
+                    {
+                        return TimeSpan.Zero;
+                    }
+                    else
+                    {
+                        return MinScrapeTimeSpan;
+                    }
                 }
-                else
+                catch (WebException ex)
                 {
-                    return MinScrapeTimeSpan;
+                    this.errorCount++;
+                    Debug.WriteLine("Error fetching card with id={0}.  The error message was:\n{1}", id, ex);
+                    return TimeSpan.FromMilliseconds(Math.Pow(2, this.errorCount) * MinScrapeTimeSpan.TotalMilliseconds);
                 }
             }
         }
