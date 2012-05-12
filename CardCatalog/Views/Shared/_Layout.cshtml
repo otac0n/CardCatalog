@@ -37,17 +37,11 @@
         </header>
         <section id="main">
 <div style="float: right;">
-@using (Html.BeginForm("details", "card"))
-{
-    <text>Find a card <input id="search-box" /> <input type="hidden" id="id" name="id" /> <button type="button" id="go-button">Go</button></text>
-}
+Find a card <input id="search-box" />
 </div>
 
 <script>
     $(function () {
-        $("#go-button").click(function () {
-            window.location = '@Url.Action("details", "card", new { id = "_id_" })'.replace('_id_', $("#id").val());
-        });
         $("#search-box").autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -68,10 +62,9 @@
             },
             minLength: 2,
             select: function (event, ui) {
-                $("#id").val(ui.item ? ui.item.id : "");
-            },
-            change: function (event, ui) {
-                $("#id").val(ui.item ? ui.item.id : "");
+                if (ui.item) {
+                    window.location = '@Url.Action("details", "card", new { id = "_id_" })'.replace('_id_', ui.item.id);
+                }
             }
         })
         .data("autocomplete")._renderItem = function (ul, item) {
