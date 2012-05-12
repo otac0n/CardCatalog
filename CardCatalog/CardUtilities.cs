@@ -221,7 +221,7 @@ namespace CardCatalog
                     var fetchState = session.Load<FetchState>("current");
                     if (fetchState == null)
                     {
-                        fetchState = new FetchState();
+                        fetchState = new FetchState { HighestKnownCard = 100 };
                         session.Store(fetchState, "current");
                     }
 
@@ -295,6 +295,38 @@ namespace CardCatalog
                 {
                     get { return false; }
                 }
+            }
+        }
+
+        public class BackgroundScraper
+        {
+            private int highestCardAdded = 0;
+            private readonly List<int> cardsToCheck = new List<int>();
+            private readonly Random rand = new Random();
+
+            public TimeSpan? ScrapeSingle()
+            {
+                // If we don't have any cards left to check (or if we have never populated the list).
+                if (cardsToCheck.Count == 0)
+                {
+                    int highestKnown = 0;
+                    CardUtilities.UsingFetchState(fetchState => { highestKnown = fetchState.HighestKnownCard; });
+                    cardsToCheck.AddRange(Enumerable.Range(highestCardAdded, highestKnown - highestCardAdded));
+                    highestCardAdded = highestKnown;
+
+                    // If we still have no cards to check, we are finished.
+                    if (cardsToCheck.Count == 0)
+                    {
+                        return null;
+                    }
+                }
+
+                var ix = rand.Next(cardsToCheck.Count);
+                var id = cardsToCheck[ix];
+
+                System.Diagnostics.Debug.WriteLine(string.Format("Background task fired for card {0}.", id));
+                cardsToCheck.RemoveAt(ix);
+                return TimeSpan.Zero;
             }
         }
     }

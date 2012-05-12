@@ -47,11 +47,7 @@ namespace CardCatalog
             IndexCreation.CreateIndexes(typeof(MvcApplication).Assembly, DocumentStore);
             MvcMiniProfiler.RavenDb.Profiler.AttachTo(DocumentStore);
 
-            backgroundCancellation = RepeatingBackgroundTask.Start(TimeSpan.FromSeconds(10), () =>
-            {
-                System.Diagnostics.Debug.WriteLine("Background task fired.");
-                return TimeSpan.FromSeconds(10);
-            });
+            backgroundCancellation = RepeatingBackgroundTask.Start(TimeSpan.FromSeconds(10), new CardUtilities.BackgroundScraper().ScrapeSingle);
         }
 
         protected void Application_Stop()
