@@ -141,6 +141,7 @@ namespace CardCatalog.Controllers
                 cost == "Red or White" ? "{RW}" :
                 cost == "Snow" ? "{S}" :
                 cost == "Tap" ? "{T}" :
+                cost == "Untap" ? "{Q}" :
                 cost == "Variable Colorless" ? "{X}" :
                 cost == "White" ? "{W}" :
                 cost == "White or Black" ? "{WB}" :
