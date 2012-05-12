@@ -310,7 +310,7 @@ namespace CardCatalog
 
         public class BackgroundScraper
         {
-            private static readonly TimeSpan MinScrapeTimeSpan = TimeSpan.FromSeconds(6);
+            private static readonly TimeSpan MinScrapeTimeSpan = TimeSpan.FromSeconds(0.5);
             private int highestCardAdded = 0;
             private readonly List<int> cardsToCheck = new List<int>();
             private readonly Random rand = new Random();
@@ -336,7 +336,6 @@ namespace CardCatalog
                 var id = cardsToCheck[ix];
 
                 bool previouslyScraped;
-                Debug.WriteLine(string.Format("Background task fired for card {0}.", id));
                 using (var session = MvcApplication.DocumentStore.OpenSession())
                 {
                     session.ReadOrScrapeCard(id, out previouslyScraped);
