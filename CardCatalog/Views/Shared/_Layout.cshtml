@@ -80,7 +80,7 @@
                 .append('<a>' + item.label + '<br><span style="font-size: 8pt;">' + item.desc + '</span></a>')
                 .appendTo(ul);
         };;
-        $(document).bind('keydown.s', function () {
+        $(document).bind('keyup.s', function () {
             $("#search-box").focus(); return false;
         });
     });
