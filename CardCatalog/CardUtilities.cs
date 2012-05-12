@@ -42,8 +42,7 @@ namespace CardCatalog
                 }
 
                 previouslyScraped = false;
-                int highestId;
-                card = CardUtilities.ScrapeCard(id, out highestId);
+                card = CardUtilities.ScrapeCard(id);
 
                 UsingFetchState(fetchState =>
                 {
@@ -51,8 +50,6 @@ namespace CardCatalog
                     {
                         fetchState.AddMissingCard(id);
                     }
-
-                    fetchState.UpdateHighestKnown(highestId);
                 });
 
                 if (card != null)
@@ -65,7 +62,7 @@ namespace CardCatalog
             return card;
         }
 
-        public static Card ScrapeCard(int id, out int highestId)
+        public static Card ScrapeCard(int id)
         {
             var doc = new HtmlDocument();
             using (var client = new WebClient())
@@ -73,11 +70,6 @@ namespace CardCatalog
                 client.Encoding = Encoding.UTF8;
                 var html = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + id);
                 doc.LoadHtml(html);
-
-                highestId = (from Match m in Regex.Matches(html, @"multiverseid=(?<id>\d+)")
-                             let v = int.Parse(m.Groups["id"].Value)
-                             orderby v descending
-                             select v).FirstOrDefault();
             }
 
             var cardFaceNodes = doc.DocumentNode.SelectNodes("//table[contains(concat(' ',normalize-space(@class),' '),' cardDetails ')]");
@@ -235,7 +227,7 @@ namespace CardCatalog
                     var fetchState = session.Load<FetchState>("current");
                     if (fetchState == null)
                     {
-                        fetchState = new FetchState { HighestKnownCard = 100 };
+                        fetchState = new FetchState();
                         session.Store(fetchState, "current");
                     }
 
@@ -260,17 +252,7 @@ namespace CardCatalog
                 this.MissingCardRanges = new List<CardRange>();
             }
 
-            public int HighestKnownCard { get; set; }
-
             public List<CardRange> MissingCardRanges { get; set; }
-
-            public void UpdateHighestKnown(int id)
-            {
-                if (this.HighestKnownCard < id)
-                {
-                    this.HighestKnownCard = id;
-                }
-            }
 
             public void AddMissingCard(int id)
             {
@@ -315,7 +297,6 @@ namespace CardCatalog
         public class BackgroundScraper
         {
             private static readonly TimeSpan MinScrapeTimeSpan = TimeSpan.FromSeconds(0.5);
-            private int highestCardAdded = 0;
             private readonly List<int> cardsToCheck = new List<int>();
             private readonly Random rand = new Random();
             private int errorCount;
@@ -325,10 +306,6 @@ namespace CardCatalog
                 // If we don't have any cards left to check (or if we have never populated the list).
                 if (cardsToCheck.Count == 0)
                 {
-                    int highestKnown = 0;
-                    CardUtilities.UsingFetchState(fetchState => { highestKnown = fetchState.HighestKnownCard; });
-                    cardsToCheck.AddRange(Enumerable.Range(highestCardAdded, highestKnown - highestCardAdded));
-                    highestCardAdded = highestKnown;
 
                     // If we still have no cards to check, we are finished.
                     if (cardsToCheck.Count == 0)
