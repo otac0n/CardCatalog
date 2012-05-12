@@ -116,3 +116,9 @@ Owned: @ownerships.Count
     <input type="text" id="quantity" name="quantity" value="1" /> <button type="submit">Add</button>
 }
 </p>
+
+<script>
+    $(document).bind('keydown.a', function () {
+        $("#quantity").focus().select(); return false;
+    });
+</script>

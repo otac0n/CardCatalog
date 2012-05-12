@@ -16,6 +16,8 @@
         @<script src="@Url.Content("~/Scripts/jquery-1.7.2.min.js")" type="text/javascript"></script>)
     @this.TimeScript("jQuery UI", 
         @<script src="@Url.Content("~/Scripts/jquery-ui-1.8.19.min.js")" type="text/javascript"></script>)
+    @this.TimeScript("jQuery Hotkeys", 
+        @<script src="@Url.Content("~/Scripts/jquery.hotkeys.min.js")" type="text/javascript"></script>)
 </head>
 <body>
     <div class="page">
@@ -78,6 +80,9 @@
                 .append('<a>' + item.label + '<br><span style="font-size: 8pt;">' + item.desc + '</span></a>')
                 .appendTo(ul);
         };;
+        $(document).bind('keydown.s', function () {
+            $("#search-box").focus(); return false;
+        });
     });
 </script>
             @RenderBody()
