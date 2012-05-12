@@ -19,16 +19,7 @@ namespace CardCatalog.Controllers
         {
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var card = (from c in session.Query<Card>()
-                            where c.FrontFace.Id == id || c.BackFace.Id == id
-                            select c).SingleOrDefault();
-
-                if (card == null)
-                {
-                    card = ScrapeUtilities.ScrapeCard(id);
-                    session.Store(card);
-                    session.SaveChanges();
-                }
+                var card = session.ReadOrScrapeCard(id);
 
                 if (card.Id != id)
                 {

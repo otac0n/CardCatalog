@@ -7,11 +7,30 @@ using HtmlAgilityPack;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using Raven.Client;
 
 namespace CardCatalog
 {
-    public static class ScrapeUtilities
+    public static class CardUtilities
     {
+        public static Card ReadOrScrapeCard(this IDocumentSession session, int id)
+        {
+            // First, try to fetch the card from the database.
+            var card = (from c in session.Query<Card>()
+                        where c.FrontFace.Id == id || c.BackFace.Id == id
+                        select c).SingleOrDefault();
+
+            // If the card is missing, fetch and save it.
+            if (card == null)
+            {
+                card = CardUtilities.ScrapeCard(id);
+                session.Store(card);
+                session.SaveChanges();
+            }
+
+            return card;
+        }
+
         public static Card ScrapeCard(int id)
         {
             var doc = new HtmlDocument();
