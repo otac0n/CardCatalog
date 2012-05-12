@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CardCatalog.Models;
 using CardCatalog.Models.Indexes;
+using Raven.Client.Linq;
 
 namespace CardCatalog.Controllers
 {
@@ -14,7 +15,10 @@ namespace CardCatalog.Controllers
         {
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var ownedCards = session.Query<CardOwnershipCount.Result, CardOwnershipCount>().ToList();
+                var ownedCards = session
+                    .Query<CardOwnershipCount.Result, CardOwnershipCount>()
+                    .Include(o => o.CardId)
+                    .ToList();
 
                 var cards = session.Load<Card>(ownedCards.Select(o => o.CardId));
 
