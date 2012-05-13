@@ -5,6 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using CardCatalog.Models;
 using Raven.Client.Linq;
+using System.Collections.Generic;
 
 namespace CardCatalog.Controllers
 {
@@ -75,6 +76,19 @@ namespace CardCatalog.Controllers
                 client.Encoding = Encoding.UTF8;
                 return Content(client.DownloadString(url), "text/json");
             }
+        }
+
+        public ActionResult Search()
+        {
+            var search = (from k in Request.QueryString.AllKeys
+                          from v in Request.QueryString.GetValues(k)
+                          select new
+                          {
+                              Field = k,
+                              Value = v,
+                          });
+
+            return Json(search, JsonRequestBehavior.AllowGet);
         }
     }
 }

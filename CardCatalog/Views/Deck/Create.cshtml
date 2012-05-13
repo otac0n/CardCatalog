@@ -9,8 +9,36 @@
 <div class="card-search"></div>
 
 <script type="text/javascript" charset="utf-8">
-    function search(facets) {
-    }
+    var search = (function () {
+        var requestId = 0;
+
+        return function search(facets) {
+            var id = ++requestId;
+
+            var terms = "";
+            for (var i = 0; i < facets.length; i++) {
+                for (var k in facets[i]) {
+                    terms += (terms == '' ? "?" : "&") + encodeURIComponent(k) + "=" + encodeURIComponent(facets[i][k]);
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("search", "card")' + terms,
+                dataType: 'json',
+                success: function (data) {
+                    if (requestId == id) {
+                        // TODO: Put the results in the DOM once we have a target for search results.
+                    }
+                },
+                error: function (_, status) {
+                    if (requestId == id) {
+                        // TODO: Switch to a message in the DOM once we have a target for search results.
+                        alert("There was an error communicating with the server.");
+                    }
+                }
+            });
+        }
+    })(); 
 
     $(function () {
         var visualSearch = VS.init({
