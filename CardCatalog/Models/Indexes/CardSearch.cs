@@ -16,18 +16,18 @@ namespace CardCatalog.Models.Indexes
                                 {
                                     Expansion = c.Expansion,
                                     Rarity = c.Rarity,
-                                    Artist = c.NormalizedFaces.Select(f => f.Artist),
-                                    Colors = c.Colors,
-                                    ConvertedManaCost = c.NormalizedFaces.Select(f => f.ConvertedManaCost),
-                                    Name = c.NormalizedFaces.Select(f => f.Name),
-                                    Power = c.NormalizedFaces.Select(f => f.Power),
-                                    Text =
+                                    Artist = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Artist)),
+                                    Colors = string.Join(" ", c.Colors),
+                                    ConvertedManaCost = c.NormalizedFaces.Select(f => f.ConvertedManaCost).First(),
+                                    Name = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Name)),
+                                    Power = c.NormalizedFaces.Select(f => f.Power).First(),
+                                    Text = string.Join(Environment.NewLine,
                                         c.NormalizedFaces.Select(f => f.Name)
                                         .Concat(c.NormalizedFaces.SelectMany(f => f.CardText))
                                         .Concat(c.NormalizedFaces.Select(f => f.Types))
-                                        .Concat(c.NormalizedFaces.SelectMany(f => f.FlavorText)),
-                                    Toughness = c.NormalizedFaces.Select(f => f.Toughness),
-                                    Types = c.NormalizedFaces.Select(f => f.Types),
+                                        .Concat(c.NormalizedFaces.SelectMany(f => f.FlavorText))),
+                                    Toughness = c.NormalizedFaces.Select(f => f.Toughness).First(),
+                                    Types = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Types)),
                                 };
 
             this.Index(r => r.Expansion, FieldIndexing.NotAnalyzed);
@@ -50,21 +50,21 @@ namespace CardCatalog.Models.Indexes
 
             public string Rarity { get; set; }
 
-            public IEnumerable<string> Artist { get; set; }
+            public string Artist { get; set; }
 
-            public IEnumerable<string> Colors { get; set; }
+            public string Colors { get; set; }
 
-            public IEnumerable<decimal?> ConvertedManaCost { get; set; }
+            public decimal? ConvertedManaCost { get; set; }
 
-            public IEnumerable<string> Name { get; set; }
+            public string Name { get; set; }
 
-            public IEnumerable<string> Power { get; set; }
+            public string Power { get; set; }
 
-            public IEnumerable<string> Text { get; set; }
+            public string Text { get; set; }
 
-            public IEnumerable<string> Toughness { get; set; }
+            public string Toughness { get; set; }
 
-            public IEnumerable<string> Types { get; set; }
+            public string Types { get; set; }
         }
     }
 }
