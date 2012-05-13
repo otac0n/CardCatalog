@@ -113,6 +113,16 @@ namespace CardCatalog.Controllers
                             searchQuery = searchQuery.WhereEquals("ConvertedManaCost", term.Value);
                             break;
 
+                        case "color":
+                            var color = term.Value.ToLower()
+                                .Replace("black", "B")
+                                .Replace("blue", "U")
+                                .Replace("green", "G")
+                                .Replace("red", "R")
+                                .Replace("white", "W");
+                            searchQuery = searchQuery.WhereContains("Color", color);
+                            break;
+
                         case "expansion":
                             searchQuery = searchQuery.WhereEquals("Expansion", term.Value);
                             break;

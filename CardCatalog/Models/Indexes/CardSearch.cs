@@ -17,6 +17,7 @@ namespace CardCatalog.Models.Indexes
                                     Expansion = c.Expansion,
                                     Rarity = c.Rarity,
                                     Artist = c.NormalizedFaces.Select(f => f.Artist),
+                                    Color = c.NormalizedFaces.Select(f => string.Join(" ", (f.ManaCost ?? "").Split("{0123456789}".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))),
                                     ConvertedManaCost = c.NormalizedFaces.Select(f => f.ConvertedManaCost),
                                     Name = c.NormalizedFaces.Select(f => f.Name),
                                     Power = c.NormalizedFaces.Select(f => f.Power),
@@ -27,6 +28,7 @@ namespace CardCatalog.Models.Indexes
             this.Index(r => r.Expansion, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Rarity, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Artist, FieldIndexing.Analyzed);
+            this.Index(r => r.Color, FieldIndexing.Analyzed);
             this.Index(r => r.ConvertedManaCost, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Name, FieldIndexing.Analyzed);
             this.Index(r => r.Power, FieldIndexing.NotAnalyzed);
@@ -43,6 +45,8 @@ namespace CardCatalog.Models.Indexes
             public string Rarity { get; set; }
 
             public IEnumerable<string> Artist { get; set; }
+
+            public IEnumerable<string> Color { get; set; }
 
             public IEnumerable<int?> ConvertedManaCost { get; set; }
 
