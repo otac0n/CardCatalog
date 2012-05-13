@@ -258,7 +258,26 @@ namespace CardCatalog
                     select HtmlEntity.DeEntitize(text).Trim()).ToList();
         }
 
-        private static List<int> ScrapeExpansion(string expansion)
+        private static Expansion ReadOrScrapeExpansion(this IDocumentSession session, string name, out bool previouslyScraped)
+        {
+            previouslyScraped = true;
+
+            var expansion = (from e in session.Query<Expansion>()
+                             where e.Name == name
+                             select e).SingleOrDefault();
+
+            if (expansion == null)
+            {
+                previouslyScraped = false;
+                expansion = ScrapeExpansion(name);
+                session.Store(expansion);
+                session.SaveChanges();
+            }
+
+            return expansion;
+        }
+
+        private static Expansion ScrapeExpansion(string expansion)
         {
             var doc = new HtmlDocument();
             using (var client = new WebClient())
@@ -268,10 +287,17 @@ namespace CardCatalog
                 doc.LoadHtml(html);
             }
 
-            return (from HtmlNode anchor in doc.DocumentNode.SelectNodes("//*[@class='cardItem']/descendant::a[@class='nameLink']")
-                    let href = anchor.Attributes["href"].Value
-                    let id = int.Parse(Regex.Match(href, @"multiverseid=(?<id>\d+)").Groups["id"].Value)
-                    select id).ToList();
+            var ids = (from HtmlNode anchor in doc.DocumentNode.SelectNodes("//*[@class='cardItem']/descendant::a[@class='nameLink']")
+                       let href = anchor.Attributes["href"].Value
+                       let id = int.Parse(Regex.Match(href, @"multiverseid=(?<id>\d+)").Groups["id"].Value)
+                       let cardId = "cards/" + id
+                       select cardId).ToList();
+
+            return new Expansion
+            {
+                Name = expansion,
+                Cards = ids,
+            };
         }
 
         private static void UsingFetchState(Action<FetchState> action)
@@ -328,6 +354,13 @@ namespace CardCatalog
             }
         }
 
+        private class Expansion
+        {
+            public string Name { get; set; }
+
+            public List<string> Cards { get; set; }
+        }
+
         public class BackgroundScraper
         {
             private static readonly TimeSpan MinScrapeTimeSpan = TimeSpan.FromSeconds(0.5);
@@ -372,7 +405,7 @@ namespace CardCatalog
             private TimeSpan ScrapeExpansions()
             {
                 // TODO: Cache this in Raven, expire it as needed.
-                this.expansions = new List<string>(ScrapeAllExpansions());
+                this.expansions = ScrapeAllExpansions();
                 return MinScrapeTimeSpan;
             }
 
@@ -385,12 +418,15 @@ namespace CardCatalog
 
                 var ix = rand.Next(this.expansions.Count);
                 var exp = this.expansions[ix];
-
-                // TODO: Cache this in Raven, expire it as needed.
-                this.cardsToCheck.AddRange(ScrapeExpansion(exp));
+                bool previouslyScraped;
+                using (var session = MvcApplication.DocumentStore.OpenSession())
+                {
+                    this.cardsToCheck.AddRange(session.ReadOrScrapeExpansion(exp, out previouslyScraped).Cards.Select(c => int.Parse(c.Split('/')[1])));
+                }
 
                 this.expansions.RemoveAt(ix);
-                return MinScrapeTimeSpan;
+
+                return previouslyScraped ? TimeSpan.Zero : MinScrapeTimeSpan;
             }
 
             private TimeSpan? ScrapeSingleCard()
@@ -404,14 +440,7 @@ namespace CardCatalog
                 }
 
                 cardsToCheck.RemoveAt(ix);
-                if (previouslyScraped)
-                {
-                    return TimeSpan.Zero;
-                }
-                else
-                {
-                    return MinScrapeTimeSpan;
-                }
+                return  previouslyScraped ? TimeSpan.Zero : MinScrapeTimeSpan;
             }
         }
     }
