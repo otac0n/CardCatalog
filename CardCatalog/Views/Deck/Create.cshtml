@@ -26,7 +26,7 @@
                     var $results = $("#search-results");
                     $results.empty();
                     for (var i = 0; i < data.length; i++) {
-                        $results.append($("<img />").attr('src', "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + data[i].Id + "&type=card"));
+                        $results.append($("<img />").attr('src', "@Url.Action("Card", "Image", new { id = "__id__", side = 0 })".replace("__id__", data[i].Id)));
                     }
                 },
                 error: function (_, status) {

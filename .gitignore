@@ -4,3 +4,4 @@
 *.user
 *.ncrunch*
 *.[Cc]ache
+/CardCatalog/Images/

@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = string.Join(" / ", Model.NormalizedFaces.Select(f => f.Name));
     var ownerships = ViewBag.Ownerships as List<CardCatalog.Models.Ownership>;
+    var cardId = Model.NormalizedFaces[0].Id;
 }
 
 <style>
@@ -43,11 +44,13 @@
     }
 </dl>
 
-@foreach (var face in Model.NormalizedFaces.Where(f => f != null))
+@foreach (var faceInfo in Model.NormalizedFaces.Select((f, i) => new { Face = f, Side = i }))
 {
+    var face = faceInfo.Face;
+    var side = faceInfo.Side;
     <fieldset class="card-face">
         <legend class="card-face-name">@face.Name</legend>
-        <figure class="card-face-image"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@(face.Id)&type=card" /></figure>
+        <figure class="card-face-image"><img src="@Url.Action("Card", "Image", new { id = cardId, side = side })" /></figure>
         <section class="card-face-properties">
             <dl>
                 @if (face.ManaCost != null)

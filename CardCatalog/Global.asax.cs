@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
+using CardCatalog.Controllers;
 
 namespace CardCatalog
 {
@@ -24,6 +25,8 @@ namespace CardCatalog
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            ImageController.RegisterRoutes(routes);
 
             routes.MapRoute(
                 "Default", // Route name
