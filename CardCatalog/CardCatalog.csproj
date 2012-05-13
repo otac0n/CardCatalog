@@ -94,6 +94,7 @@
     <Compile Include="App_Start\MiniProfiler.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CardController.cs" />
+    <Compile Include="Controllers\DeckController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -101,6 +102,7 @@
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\CardFace.cs" />
+    <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\Indexes\CardOwnershipCount.cs" />
     <Compile Include="Models\Indexes\CardSearch.cs" />
     <Compile Include="RepeatingBackgroundTask.cs" />
@@ -208,6 +210,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Card\Details.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Deck\Create.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
