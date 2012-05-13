@@ -114,13 +114,7 @@ namespace CardCatalog.Controllers
                             break;
 
                         case "color":
-                            var color = term.Value.ToLower()
-                                .Replace("black", "B")
-                                .Replace("blue", "U")
-                                .Replace("green", "G")
-                                .Replace("red", "R")
-                                .Replace("white", "W");
-                            searchQuery = searchQuery.WhereContains("Color", color);
+                            searchQuery = searchQuery.WhereContains("Colors", term.Value);
                             break;
 
                         case "expansion":
