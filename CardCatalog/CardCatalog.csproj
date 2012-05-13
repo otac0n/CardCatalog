@@ -102,6 +102,7 @@
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\CardFace.cs" />
     <Compile Include="Models\Indexes\CardOwnershipCount.cs" />
+    <Compile Include="Models\Indexes\CardSearch.cs" />
     <Compile Include="RepeatingBackgroundTask.cs" />
     <Compile Include="CardUtilities.cs" />
     <Compile Include="Models\Ownership.cs" />
