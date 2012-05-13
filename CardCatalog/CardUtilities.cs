@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using CardCatalog.Models;
-using HtmlAgilityPack;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using Raven.Client;
+using CardCatalog.Models;
+using HtmlAgilityPack;
 using Intervals;
 using Newtonsoft.Json;
-using System.Diagnostics;
+using Raven.Client;
 
 namespace CardCatalog
 {
@@ -352,13 +350,6 @@ namespace CardCatalog
                     get { return false; }
                 }
             }
-        }
-
-        private class Expansion
-        {
-            public string Name { get; set; }
-
-            public List<string> Cards { get; set; }
         }
 
         public class BackgroundScraper
