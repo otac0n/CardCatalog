@@ -243,6 +243,37 @@ namespace CardCatalog
             return result;
         }
 
+        private static List<string> ScrapeAllExpansions()
+        {
+            var doc = new HtmlDocument();
+            using (var client = new WebClient())
+            {
+                client.Encoding = Encoding.UTF8;
+                var html = client.DownloadString("http://gatherer.wizards.com/Pages/Advanced.aspx");
+                doc.LoadHtml(html);
+            }
+
+            return (from HtmlNode node in doc.DocumentNode.SelectNodes("//*[@id='autoCompleteSourceBoxsetAddText0_InnerTextBoxcontainer']/a")
+                    let text = node.InnerText
+                    select HtmlEntity.DeEntitize(text).Trim()).ToList();
+        }
+
+        private static List<int> ScrapeExpansion(string expansion)
+        {
+            var doc = new HtmlDocument();
+            using (var client = new WebClient())
+            {
+                client.Encoding = Encoding.UTF8;
+                var html = client.DownloadString(string.Format("http://gatherer.wizards.com/Pages/Search/Default.aspx?sort=cn+&output=checklist&action=advanced&set=[%22{0}%22]", Uri.EscapeDataString(expansion)));
+                doc.LoadHtml(html);
+            }
+
+            return (from HtmlNode anchor in doc.DocumentNode.SelectNodes("//*[@class='cardItem']/descendant::a[@class='nameLink']")
+                    let href = anchor.Attributes["href"].Value
+                    let id = int.Parse(Regex.Match(href, @"multiverseid=(?<id>\d+)").Groups["id"].Value)
+                    select id).ToList();
+        }
+
         private static void UsingFetchState(Action<FetchState> action)
         {
             var ignore = UsingFetchState(fetchState => { action(fetchState); return true; });
@@ -300,50 +331,86 @@ namespace CardCatalog
         public class BackgroundScraper
         {
             private static readonly TimeSpan MinScrapeTimeSpan = TimeSpan.FromSeconds(0.5);
-            private readonly List<int> cardsToCheck = new List<int>();
             private readonly Random rand = new Random();
+            private List<string> expansions;
+            private List<int> cardsToCheck = new List<int>();
             private int errorCount;
 
             public TimeSpan? ScrapeSingle()
             {
-                // If we don't have any cards left to check (or if we have never populated the list).
-                if (cardsToCheck.Count == 0)
-                {
-
-                    // If we still have no cards to check, we are finished.
-                    if (cardsToCheck.Count == 0)
-                    {
-                        return null;
-                    }
-                }
-
-                var ix = rand.Next(cardsToCheck.Count);
-                var id = cardsToCheck[ix];
-
+                bool faulted = false;
                 try
                 {
-                    bool previouslyScraped;
-                    using (var session = MvcApplication.DocumentStore.OpenSession())
+                    if (expansions == null)
                     {
-                        session.ReadOrScrapeCard(id, out previouslyScraped);
+                        return ScrapeExpansions();
                     }
-
-                    this.errorCount = 0;
-                    cardsToCheck.RemoveAt(ix);
-                    if (previouslyScraped)
+                    else if (this.cardsToCheck.Count > 0)
                     {
-                        return TimeSpan.Zero;
+                        return ScrapeSingleCard();
                     }
                     else
                     {
-                        return MinScrapeTimeSpan;
+                        return ScrapeSingleExpansion();
                     }
                 }
                 catch (WebException ex)
                 {
+                    faulted = true;
                     this.errorCount++;
-                    Debug.WriteLine("Error fetching card with id={0}.  The error message was:\n{1}", id, ex);
                     return TimeSpan.FromMilliseconds(Math.Pow(2, this.errorCount) * MinScrapeTimeSpan.TotalMilliseconds);
+                }
+                finally
+                {
+                    if (!faulted)
+                    {
+                        this.errorCount = 0;
+                    }
+                }
+            }
+
+            private TimeSpan ScrapeExpansions()
+            {
+                // TODO: Cache this in Raven, expire it as needed.
+                this.expansions = new List<string>(ScrapeAllExpansions());
+                return MinScrapeTimeSpan;
+            }
+
+            private TimeSpan? ScrapeSingleExpansion()
+            {
+                if (this.expansions.Count == 0)
+                {
+                    return null;
+                }
+
+                var ix = rand.Next(this.expansions.Count);
+                var exp = this.expansions[ix];
+
+                // TODO: Cache this in Raven, expire it as needed.
+                this.cardsToCheck.AddRange(ScrapeExpansion(exp));
+
+                this.expansions.RemoveAt(ix);
+                return MinScrapeTimeSpan;
+            }
+
+            private TimeSpan? ScrapeSingleCard()
+            {
+                var ix = rand.Next(cardsToCheck.Count);
+                var id = cardsToCheck[ix];
+                bool previouslyScraped;
+                using (var session = MvcApplication.DocumentStore.OpenSession())
+                {
+                    session.ReadOrScrapeCard(id, out previouslyScraped);
+                }
+
+                cardsToCheck.RemoveAt(ix);
+                if (previouslyScraped)
+                {
+                    return TimeSpan.Zero;
+                }
+                else
+                {
+                    return MinScrapeTimeSpan;
                 }
             }
         }
