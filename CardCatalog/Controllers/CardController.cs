@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using CardCatalog.Models;
 using Raven.Client.Linq;
 using System.Collections.Generic;
+using CardCatalog.Models.Indexes;
+using System.Linq.Expressions;
 
 namespace CardCatalog.Controllers
 {
@@ -88,7 +90,64 @@ namespace CardCatalog.Controllers
                               Value = v,
                           });
 
-            return Json(search, JsonRequestBehavior.AllowGet);
+            using (var session = MvcApplication.DocumentStore.OpenSession())
+            {
+                var searchQuery = session.Advanced.LuceneQuery<Card, CardSearch>();
+                bool needsAnd = false;
+                foreach (var term in search)
+                {
+                    if (needsAnd)
+                    {
+                        searchQuery = searchQuery.AndAlso();
+                    }
+
+                    needsAnd = true;
+
+                    switch (term.Field.ToLower())
+                    {
+                        case "artist":
+                            searchQuery = searchQuery.WhereContains("Artist", term.Value);
+                            break;
+
+                        case "cost":
+                            searchQuery = searchQuery.WhereEquals("ConvertedManaCost", term.Value);
+                            break;
+
+                        case "expansion":
+                            searchQuery = searchQuery.WhereEquals("Expansion", term.Value);
+                            break;
+
+                        case "name":
+                            searchQuery = searchQuery.WhereContains("Name", term.Value);
+                            break;
+
+                        case "power":
+                            searchQuery = searchQuery.WhereEquals("Power", term.Value);
+                            break;
+
+                        case "rarity":
+                            searchQuery = searchQuery.WhereEquals("Rarity", term.Value);
+                            break;
+
+                        case "toughness":
+                            searchQuery = searchQuery.WhereEquals("Toughness", term.Value);
+                            break;
+
+                        case "type":
+                            searchQuery = searchQuery.WhereContains("Types", term.Value);
+                            break;
+
+                        default:
+                            searchQuery = searchQuery.WhereEquals(term.Field, term.Value);
+                            break;
+                    }
+                }
+
+                RavenQueryStatistics stats;
+                var results = searchQuery.OrderBy("Name").Statistics(out stats).ToList();
+
+                return Json(results, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -6,15 +6,12 @@
 
 <h2>@ViewBag.Title</h2>
 
-<div class="card-search"></div>
+<div id="card-search"></div>
+<div id="search-results"></div>
 
 <script type="text/javascript" charset="utf-8">
     var search = (function () {
-        var requestId = 0;
-
         return function search(facets) {
-            var id = ++requestId;
-
             var terms = "";
             for (var i = 0; i < facets.length; i++) {
                 for (var k in facets[i]) {
@@ -26,15 +23,15 @@
                 url: '@Url.Action("search", "card")' + terms,
                 dataType: 'json',
                 success: function (data) {
-                    if (requestId == id) {
-                        // TODO: Put the results in the DOM once we have a target for search results.
+                    var $results = $("#search-results");
+                    $results.empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $results.append($("<img />").attr('src', "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + data[i].Id + "&type=card"));
                     }
                 },
                 error: function (_, status) {
-                    if (requestId == id) {
-                        // TODO: Switch to a message in the DOM once we have a target for search results.
-                        alert("There was an error communicating with the server.");
-                    }
+                    // TODO: Switch to a message in the DOM once we have a target for search results.
+                    alert("There was an error communicating with the server.");
                 }
             });
         }
@@ -42,15 +39,18 @@
 
     $(function () {
         var visualSearch = VS.init({
-            container: $('.card-search'),
+            container: $('#card-search'),
             query: '',
             callbacks: {
                 search: function (query, searchCollection) { search(searchCollection.facets()); },
-                facetMatches: function (callback) { callback(['cost', 'color', 'name', ]); },
+                facetMatches: function (callback) { callback([ 'artist', 'cost', 'color', 'expansion', 'name', 'power', 'rarity', 'toughness', 'type' ]); },
                 valueMatches: function (facet, searchTerm, callback) {
                     switch (facet.toLowerCase()) {
                         case 'color':
                             callback(['black', 'blue', 'green', 'red', 'white']);
+                            break;
+                        case 'rarity':
+                            callback(['basic', 'common', 'uncommon', 'rare', 'mythic']);
                             break;
                     }
                 }
