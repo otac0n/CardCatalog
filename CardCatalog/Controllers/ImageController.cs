@@ -23,7 +23,7 @@ namespace CardCatalog.Controllers
                     card = session.ReadOrScrapeCard(id);
                 }
 
-                if (card.Id != id || card.NormalizedFaces.Count <= side)
+                if (card == null || card.Id != id || card.NormalizedFaces.Count <= side)
                 {
                     return HttpNotFound();
                 }
