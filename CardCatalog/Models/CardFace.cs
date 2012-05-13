@@ -15,7 +15,7 @@ namespace CardCatalog.Models
 
         public string[] CardText { get; set; }
 
-        public int? ConvertedManaCost { get; set; }
+        public decimal? ConvertedManaCost { get; set; }
 
         public string[] FlavorText { get; set; }
 

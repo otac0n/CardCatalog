@@ -48,7 +48,7 @@ namespace CardCatalog.Models.Indexes
 
             public IEnumerable<string> Color { get; set; }
 
-            public IEnumerable<int?> ConvertedManaCost { get; set; }
+            public IEnumerable<decimal?> ConvertedManaCost { get; set; }
 
             public IEnumerable<string> Name { get; set; }
 

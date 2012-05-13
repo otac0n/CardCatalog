@@ -151,7 +151,7 @@ namespace CardCatalog
                                   select mapMana(cost));
 
             var convertedManaDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Converted Mana Cost:')]]/following-sibling::*[1]");
-            var convertedMana = convertedManaDiv == null ? (int?)null : int.Parse(convertedManaDiv.InnerText.Trim());
+            var convertedMana = convertedManaDiv == null ? (decimal?)null : decimal.Parse(convertedManaDiv.InnerText.Trim());
 
             var typesDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Types:')]]/following-sibling::*[1]");
             var types = typesDiv == null ? null : Regex.Replace(HtmlEntity.DeEntitize(typesDiv.InnerText).Trim(), @"\s+", " ");
