@@ -4,5 +4,29 @@
     ViewBag.Title = "Create a Deck";
 }
 
-<h2>Create a Deck</h2>
+<h2>@ViewBag.Title</h2>
 
+<div class="card-search"></div>
+
+<script type="text/javascript" charset="utf-8">
+    function search(facets) {
+    }
+
+    $(function () {
+        var visualSearch = VS.init({
+            container: $('.card-search'),
+            query: '',
+            callbacks: {
+                search: function (query, searchCollection) { search(searchCollection.facets()); },
+                facetMatches: function (callback) { callback(['cost', 'color', 'name', ]); },
+                valueMatches: function (facet, searchTerm, callback) {
+                    switch (facet.toLowerCase()) {
+                        case 'color':
+                            callback(['black', 'blue', 'green', 'red', 'white']);
+                            break;
+                    }
+                }
+            }
+        });
+    });
+</script>
