@@ -48,13 +48,13 @@
                 valueMatches: function (facet, searchTerm, callback) {
                     switch (facet.toLowerCase()) {
                         case 'color':
-                            callback(['black', 'blue', 'green', 'red', 'white']);
+                            callback(['black', 'blue', 'green', 'red', 'white'], { preserveMatches: true });
                             break;
                         case 'expansion':
-                            callback(@Html.Json(expansions.Select(e => e.Name)));
+                            callback(@Html.Json(expansions.Select(e => e.Name)), { preserveMatches: true });
                             break;
                         case 'rarity':
-                            callback(['basic', 'common', 'uncommon', 'rare', 'mythic']);
+                            callback(['basic', 'common', 'uncommon', 'rare', 'mythic'], { preserveMatches: true });
                             break;
                     }
                 }
