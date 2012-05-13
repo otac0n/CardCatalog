@@ -147,6 +147,10 @@ namespace CardCatalog.Controllers
                             searchQuery = searchQuery.WhereContains("Types", term.Value);
                             break;
 
+                        case "text":
+                            searchQuery = searchQuery.WhereContains("Text", term.Value);;
+                            break;
+
                         default:
                             searchQuery = searchQuery.WhereEquals(term.Field, term.Value);
                             break;

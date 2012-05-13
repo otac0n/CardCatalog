@@ -21,6 +21,11 @@ namespace CardCatalog.Models.Indexes
                                     ConvertedManaCost = c.NormalizedFaces.Select(f => f.ConvertedManaCost),
                                     Name = c.NormalizedFaces.Select(f => f.Name),
                                     Power = c.NormalizedFaces.Select(f => f.Power),
+                                    Text = 
+                                        c.NormalizedFaces.Select(f => f.Name)
+                                        .Concat(c.NormalizedFaces.SelectMany(f => f.CardText))
+                                        .Concat(c.NormalizedFaces.Select(f => f.Types))
+                                        .Concat(c.NormalizedFaces.SelectMany(f => f.FlavorText)),
                                     Toughness = c.NormalizedFaces.Select(f => f.Toughness),
                                     Types = c.NormalizedFaces.Select(f => f.Types),
                                 };
@@ -32,6 +37,7 @@ namespace CardCatalog.Models.Indexes
             this.Index(r => r.ConvertedManaCost, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Name, FieldIndexing.Analyzed);
             this.Index(r => r.Power, FieldIndexing.NotAnalyzed);
+            this.Index(r => r.Text, FieldIndexing.Analyzed);
             this.Index(r => r.Toughness, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Types, FieldIndexing.Analyzed);
 
@@ -53,6 +59,8 @@ namespace CardCatalog.Models.Indexes
             public IEnumerable<string> Name { get; set; }
 
             public IEnumerable<string> Power { get; set; }
+
+            public IEnumerable<string> Text { get; set; }
 
             public IEnumerable<string> Toughness { get; set; }
 
