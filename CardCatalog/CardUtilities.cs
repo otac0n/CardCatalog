@@ -129,6 +129,11 @@ namespace CardCatalog
                 cost == "Red or White" ? "{RW}" :
                 cost == "Snow" ? "{S}" :
                 cost == "Tap" ? "{T}" :
+                cost == "Two or Black" ? "{2B}" :
+                cost == "Two or Blue" ? "{2U}" :
+                cost == "Two or Green" ? "{2G}" :
+                cost == "Two or Red" ? "{2R}" :
+                cost == "Two or White" ? "{2W}" :
                 cost == "Untap" ? "{Q}" :
                 cost == "Variable Colorless" ? "{X}" :
                 cost == "White" ? "{W}" :
@@ -288,7 +293,7 @@ namespace CardCatalog
                 doc.LoadHtml(html);
             }
 
-            var ids = (from HtmlNode anchor in doc.DocumentNode.SelectNodes("//*[@class='cardItem']/descendant::a[@class='nameLink']")
+            var ids = (from HtmlNode anchor in doc.DocumentNode.SelectNodes("//*[@class='cardItem']/descendant::a[@class='nameLink']") ?? Enumerable.Empty<HtmlNode>()
                        let href = anchor.Attributes["href"].Value
                        let id = int.Parse(Regex.Match(href, @"multiverseid=(?<id>\d+)").Groups["id"].Value)
                        let cardId = "cards/" + id
