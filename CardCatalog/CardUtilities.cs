@@ -420,7 +420,13 @@ namespace CardCatalog
                 bool previouslyScraped;
                 using (var session = MvcApplication.DocumentStore.OpenSession())
                 {
-                    this.cardsToCheck.AddRange(session.ReadOrScrapeExpansion(exp, out previouslyScraped).Cards.Select(c => int.Parse(c.Split('/')[1])));
+                    var cards = session.ReadOrScrapeExpansion(exp, out previouslyScraped).Cards;
+                    var existingCards = session.Load<Card>(cards);
+                    var remaining = cards
+                        .Zip(existingCards, (id, card) => Tuple.Create(id, card))
+                        .Where(t => t.Item2 == null)
+                        .Select(t => t.Item1);
+                    this.cardsToCheck.AddRange(remaining.Select(c => int.Parse(c.Split('/')[1])));
                 }
 
                 this.expansions.RemoveAt(ix);
