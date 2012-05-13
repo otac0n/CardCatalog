@@ -9,6 +9,7 @@ using HtmlAgilityPack;
 using Intervals;
 using Newtonsoft.Json;
 using Raven.Client;
+using Raven.Client.Linq;
 
 namespace CardCatalog
 {
@@ -262,7 +263,9 @@ namespace CardCatalog
 
             var expansion = (from e in session.Query<Expansion>()
                              where e.Name == name
-                             select e).SingleOrDefault();
+                             select e)
+                            .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite())
+                            .SingleOrDefault();
 
             if (expansion == null)
             {
