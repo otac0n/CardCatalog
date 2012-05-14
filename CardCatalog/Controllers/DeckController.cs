@@ -22,7 +22,7 @@ namespace CardCatalog.Controllers
                 ViewBag.Expansions = session.Query<ExpansionCardCount.Result, ExpansionCardCount>().Take(1000).ToList();
             }
 
-            return View(new Deck());
+            return View("Edit", new Deck());
         }
     }
 }
