@@ -1,5 +1,9 @@
 ﻿/// <reference path="~/Scripts/jquery-1.7.2-vsdoc.js" />
 /// <reference path="~/Scripts/knockout-2.1.0.debug.js" />
+/// <reference path="~/Scripts/knockout.mapping-latest.debug.js" />
+
+var searchResults = ko.mapping.fromJS({ cards: [] });
+ko.applyBindings(searchResults, $("#search-results")[0]);
 
 var search = (function () {
     return function search(facets) {
@@ -14,10 +18,9 @@ var search = (function () {
             url: Urls.cardSearch + terms,
             dataType: 'json',
             success: function (data) {
-                var $results = $("#search-results");
-                $results.empty();
+                searchResults.cards.remove(function () { return true; });
                 for (var i = 0; i < data.length; i++) {
-                    $results.append($("<img />").attr('src', Urls.imageCard.replace("__id__", data[i].Id).replace("__side__", 0)));
+                    searchResults.cards.push(ko.mapping.fromJS(data[i]));
                 }
             },
             error: function (_, status) {
