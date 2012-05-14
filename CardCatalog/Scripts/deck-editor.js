@@ -2,8 +2,23 @@
 /// <reference path="~/Scripts/knockout-2.1.0.debug.js" />
 /// <reference path="~/Scripts/knockout.mapping-latest.debug.js" />
 
-var searchResults = ko.mapping.fromJS({ cards: [] });
-ko.applyBindings(searchResults, $("#search-results")[0]);
+var deck = (function () {
+    var vm = ko.mapping.fromJS(initialDeck);
+
+    ko.applyBindings(vm, $("#deck")[0]);
+    return vm;
+})();
+
+var searchResults = (function () {
+    var vm = ko.mapping.fromJS({ cards: [] });
+
+    vm.addCard = function (card) {
+        deck.cards.push(ko.mapping.fromJS(ko.mapping.toJS(card)));
+    };
+
+    ko.applyBindings(vm, $("#search-results")[0]);
+    return vm;
+})();
 
 var search = (function () {
     return function search(facets) {
