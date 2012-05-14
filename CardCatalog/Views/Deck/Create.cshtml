@@ -5,63 +5,15 @@
     var expansions = (List<CardCatalog.Models.Indexes.ExpansionCardCount.Result>)ViewBag.Expansions;
 }
 
+@section scripts {
+    <script>Urls.cardSearch = '@Url.Action("search", "card")';</script>
+    <script>
+        var expansions = @Html.Json(expansions.Select(e => e.Name));
+    </script>
+    <script src="@Url.Content("~/Scripts/deck-editor.js")" type="text/javascript"></script>
+}
+
 <h2>@ViewBag.Title</h2>
 
 <div id="card-search"></div>
 <div id="search-results"></div>
-
-<script type="text/javascript" charset="utf-8">
-    var search = (function () {
-        return function search(facets) {
-            var terms = "";
-            for (var i = 0; i < facets.length; i++) {
-                for (var k in facets[i]) {
-                    terms += (terms == '' ? "?" : "&") + encodeURIComponent(k) + "=" + encodeURIComponent(facets[i][k]);
-                }
-            }
-
-            $.ajax({
-                url: '@Url.Action("search", "card")' + terms,
-                dataType: 'json',
-                success: function (data) {
-                    var $results = $("#search-results");
-                    $results.empty();
-                    for (var i = 0; i < data.length; i++) {
-                        $results.append($("<img />").attr('src', "@Url.Action("Card", "Image", new { id = "__id__", side = 0 })".replace("__id__", data[i].Id)));
-                    }
-                },
-                error: function (_, status) {
-                    // TODO: Switch to a message in the DOM once we have a target for search results.
-                    alert("There was an error communicating with the server.");
-                }
-            });
-        }
-    })(); 
-
-    $(function () {
-        var visualSearch = VS.init({
-            container: $('#card-search'),
-            query: '',
-            callbacks: {
-                search: function (query, searchCollection) { search(searchCollection.facets()); },
-                facetMatches: function (callback) { callback([ 'artist', 'cost', 'color', 'expansion', 'name', 'owned', 'power', 'rarity', 'toughness', 'type' ]); },
-                valueMatches: function (facet, searchTerm, callback) {
-                    switch (facet.toLowerCase()) {
-                        case 'color':
-                            callback(['black', 'blue', 'green', 'red', 'white'], { preserveMatches: true });
-                            break;
-                        case 'expansion':
-                            callback(@Html.Json(expansions.Select(e => e.Name)), { preserveMatches: true });
-                            break;
-                        case 'owned':
-                            callback(['true', 'false'], { preserveMatches: true });
-                            break;
-                        case 'rarity':
-                            callback(['basic', 'common', 'uncommon', 'rare', 'mythic'], { preserveMatches: true });
-                            break;
-                    }
-                }
-            }
-        });
-    });
-</script>
