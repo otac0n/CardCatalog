@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿/// <reference path="~/Scripts/jquery-1.7.2-vsdoc.js" />
+
+$(function () {
     $("#search-box").autocomplete({
         source: function (request, response) {
             $.ajax({

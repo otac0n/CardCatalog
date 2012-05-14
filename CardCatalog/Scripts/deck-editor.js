@@ -1,4 +1,7 @@
-﻿var search = (function () {
+﻿/// <reference path="~/Scripts/jquery-1.7.2-vsdoc.js" />
+/// <reference path="~/Scripts/knockout-2.1.0.debug.js" />
+
+var search = (function () {
     return function search(facets) {
         var terms = "";
         for (var i = 0; i < facets.length; i++) {
