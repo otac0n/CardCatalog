@@ -7,6 +7,8 @@ ko.applyBindings(searchResults, $("#search-results")[0]);
 
 var search = (function () {
     return function search(facets) {
+        searchResults.cards.remove(function () { return true; });
+
         var terms = "";
         for (var i = 0; i < facets.length; i++) {
             for (var k in facets[i]) {
@@ -18,7 +20,6 @@ var search = (function () {
             url: Urls.cardSearch + terms,
             dataType: 'json',
             success: function (data) {
-                searchResults.cards.remove(function () { return true; });
                 for (var i = 0; i < data.length; i++) {
                     searchResults.cards.push(ko.mapping.fromJS(data[i]));
                 }
@@ -29,7 +30,7 @@ var search = (function () {
             }
         });
     }
-})(); 
+})();
 
 $(function () {
     var visualSearch = VS.init({
@@ -37,7 +38,7 @@ $(function () {
         query: '',
         callbacks: {
             search: function (query, searchCollection) { search(searchCollection.facets()); },
-            facetMatches: function (callback) { callback([ 'artist', 'cost', 'color', 'expansion', 'name', 'owned', 'power', 'rarity', 'toughness', 'type' ]); },
+            facetMatches: function (callback) { callback(['artist', 'cost', 'color', 'expansion', 'name', 'owned', 'power', 'rarity', 'toughness', 'type']); },
             valueMatches: function (facet, searchTerm, callback) {
                 switch (facet.toLowerCase()) {
                     case 'color':
@@ -56,4 +57,7 @@ $(function () {
             }
         }
     });
+
+    visualSearch.searchBox.value("owned: true");
+    search([{ owned: "true"}]);
 });
