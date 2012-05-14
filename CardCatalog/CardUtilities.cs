@@ -445,7 +445,7 @@ namespace CardCatalog
                 }
 
                 cardsToCheck.RemoveAt(ix);
-                return  previouslyScraped ? TimeSpan.Zero : MinScrapeTimeSpan;
+                return previouslyScraped ? TimeSpan.Zero : MinScrapeTimeSpan;
             }
         }
     }

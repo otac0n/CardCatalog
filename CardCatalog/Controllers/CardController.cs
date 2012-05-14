@@ -4,10 +4,8 @@ using System.Net;
 using System.Text;
 using System.Web.Mvc;
 using CardCatalog.Models;
-using Raven.Client.Linq;
-using System.Collections.Generic;
 using CardCatalog.Models.Indexes;
-using System.Linq.Expressions;
+using Raven.Client.Linq;
 
 namespace CardCatalog.Controllers
 {
@@ -161,7 +159,7 @@ namespace CardCatalog.Controllers
                             break;
 
                         case "text":
-                            searchQuery = searchQuery.WhereContains("Text", term.Value);;
+                            searchQuery = searchQuery.WhereContains("Text", term.Value);
                             break;
 
                         default:

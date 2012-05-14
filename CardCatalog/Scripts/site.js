@@ -31,7 +31,7 @@ $(function () {
             .data("item.autocomplete", item)
             .append('<a>' + item.label + '<br><span style="font-size: 8pt;">' + item.desc + '</span></a>')
             .appendTo(ul);
-    };;
+    };
     $(document).bind('keyup.s', function () {
         $("#search-box").focus().select(); return false;
     });

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Raven.Client.Indexes;
 using Raven.Abstractions.Indexing;
+using Raven.Client.Indexes;
 
 namespace CardCatalog.Models.Indexes
 {
