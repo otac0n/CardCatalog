@@ -5,6 +5,10 @@
 var deck = (function () {
     var vm = ko.mapping.fromJS(initialDeck);
 
+    vm.removeCard = function (card) {
+        vm.cards.remove(card);
+    };
+
     ko.applyBindings(vm, $("#deck")[0]);
     return vm;
 })();

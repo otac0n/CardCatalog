@@ -17,7 +17,7 @@
 <h2>@ViewBag.Title</h2>
 
 <div id="deck" data-bind="foreach: cards">
-    <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }" />
+    <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $root.removeCard($data); }" />
 </div>
 
 <div id="card-search"></div>
