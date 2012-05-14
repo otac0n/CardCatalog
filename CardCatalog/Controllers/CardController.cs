@@ -92,7 +92,7 @@ namespace CardCatalog.Controllers
 
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var searchQuery = session.Advanced.LuceneQuery<Card, CardSearch>();
+                var searchQuery = session.Advanced.LuceneQuery<CardSearch.Result, CardSearch>();
                 bool needsAnd = false;
                 foreach (var term in search)
                 {
@@ -152,9 +152,10 @@ namespace CardCatalog.Controllers
                 }
 
                 RavenQueryStatistics stats;
-                var results = searchQuery.OrderBy("Name").Statistics(out stats).ToList();
+                var results = searchQuery.OrderBy("Name").Statistics(out stats).Include(x => x.CardId).ToList();
+                var cards = session.Load<Card>(results.Select(r => r.CardId));
 
-                return Json(results, JsonRequestBehavior.AllowGet);
+                return Json(cards, JsonRequestBehavior.AllowGet);
             }
         }
     }

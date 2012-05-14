@@ -14,21 +14,39 @@ namespace CardCatalog.Models.Indexes
             this.Map = cards => from c in cards
                                 select new Result
                                 {
+                                    CardId = c.Id.ToString(),
                                     Expansion = c.Expansion,
                                     Rarity = c.Rarity,
                                     Artist = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Artist)),
                                     Colors = string.Join(" ", c.Colors),
-                                    ConvertedManaCost = c.NormalizedFaces.Select(f => f.ConvertedManaCost).First(),
-                                    Name = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Name)),
-                                    Power = c.NormalizedFaces.Select(f => f.Power).First(),
+                                    ConvertedManaCost = c.NormalizedFaces.Select(f => f.ConvertedManaCost).Where(x => x != null).FirstOrDefault(),
+                                    Name = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Name).Where(x => !string.IsNullOrEmpty(x))),
+                                    Power = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Power).Where(x => !string.IsNullOrEmpty(x))),
                                     Text = string.Join(Environment.NewLine,
                                         c.NormalizedFaces.Select(f => f.Name)
                                         .Concat(c.NormalizedFaces.SelectMany(f => f.CardText))
                                         .Concat(c.NormalizedFaces.Select(f => f.Types))
                                         .Concat(c.NormalizedFaces.SelectMany(f => f.FlavorText))),
-                                    Toughness = c.NormalizedFaces.Select(f => f.Toughness).First(),
-                                    Types = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Types)),
+                                    Toughness = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Toughness).Where(x => !string.IsNullOrEmpty(x))),
+                                    Types = string.Join(Environment.NewLine, c.NormalizedFaces.Select(f => f.Types).Where(x => !string.IsNullOrEmpty(x))),
                                 };
+
+            this.Reduce = results => from r in results
+                                     group r by r.CardId into g
+                                     select new Result
+                                     {
+                                         CardId = g.Key,
+                                         Expansion = g.Select(r => r.Expansion).Where(x => !string.IsNullOrEmpty(x)).FirstOrDefault(),
+                                         Rarity = g.Select(r => r.Rarity).Where(x => !string.IsNullOrEmpty(x)).FirstOrDefault(),
+                                         Artist = string.Join(Environment.NewLine, g.Select(r => r.Artist).Where(x => !string.IsNullOrEmpty(x))),
+                                         Colors = string.Join(" ", g.Select(r => r.Colors).Where(x => !string.IsNullOrEmpty(x))),
+                                         ConvertedManaCost = g.Select(r => r.ConvertedManaCost).Where(x => x != null).FirstOrDefault(),
+                                         Name = string.Join(Environment.NewLine, g.Select(r => r.Name).Where(x => !string.IsNullOrEmpty(x))),
+                                         Power = string.Join(Environment.NewLine, g.Select(r => r.Power).Where(x => !string.IsNullOrEmpty(x))),
+                                         Text = string.Join(Environment.NewLine, g.Select(r => r.Text).Where(x => !string.IsNullOrEmpty(x))),
+                                         Toughness = string.Join(Environment.NewLine, g.Select(r => r.Toughness).Where(x => !string.IsNullOrEmpty(x))),
+                                         Types = string.Join(Environment.NewLine, g.Select(r => r.Types).Where(x => !string.IsNullOrEmpty(x))),
+                                     };
 
             this.Index(r => r.Expansion, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Rarity, FieldIndexing.NotAnalyzed);
@@ -46,6 +64,8 @@ namespace CardCatalog.Models.Indexes
 
         public class Result
         {
+            public string CardId { get; set; }
+
             public string Expansion { get; set; }
 
             public string Rarity { get; set; }
