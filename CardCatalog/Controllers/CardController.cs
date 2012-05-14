@@ -82,12 +82,14 @@ namespace CardCatalog.Controllers
 
         public ActionResult Search(int page = 1)
         {
+            const int ResultsPerPage = 14;
             if (page < 1)
             {
                 page = 1;
             }
 
             var search = (from k in Request.QueryString.AllKeys
+                          where k.ToLower() != "page"
                           from v in Request.QueryString.GetValues(k)
                           select new
                           {
@@ -169,10 +171,17 @@ namespace CardCatalog.Controllers
                 }
 
                 RavenQueryStatistics stats;
-                var results = searchQuery.OrderBy("Name").Skip((page - 1) * 14).Take(14).Statistics(out stats).Include(x => x.CardId).ToList();
+                var results = searchQuery.OrderBy("Name").Skip((page - 1) * ResultsPerPage).Take(ResultsPerPage).Statistics(out stats).Include(x => x.CardId).ToList();
                 var cards = session.Load<Card>(results.Select(r => r.CardId));
 
-                return Json(cards, JsonRequestBehavior.AllowGet);
+                var output = new
+                {
+                    Page = page,
+                    Pages = (stats.TotalResults + ResultsPerPage - 1) / ResultsPerPage,
+                    Cards = cards,
+                };
+
+                return Json(output, JsonRequestBehavior.AllowGet);
             }
         }
     }

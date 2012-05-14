@@ -2,11 +2,13 @@
 /// <reference path="~/Scripts/knockout-2.1.0.debug.js" />
 /// <reference path="~/Scripts/knockout.mapping-latest.debug.js" />
 
+var search = function () { };
+
 var deck = (function () {
     var vm = ko.mapping.fromJS(initialDeck);
 
     vm.removeCard = function (card) {
-        vm.cards.remove(card);
+        vm.Cards.remove(card);
     };
 
     ko.applyBindings(vm, $("#deck")[0]);
@@ -14,41 +16,18 @@ var deck = (function () {
 })();
 
 var searchResults = (function () {
-    var vm = ko.mapping.fromJS({ cards: [] });
+    var vm = ko.mapping.fromJS({ Cards: [], Page: 0, Pages: 0 });
 
     vm.addCard = function (card) {
-        deck.cards.push(ko.mapping.fromJS(ko.mapping.toJS(card)));
+        deck.Cards.push(ko.mapping.fromJS(ko.mapping.toJS(card)));
+    };
+
+    vm.pageChange = function (delta) {
+        search(vm.Page() + delta);
     };
 
     ko.applyBindings(vm, $("#search-results")[0]);
     return vm;
-})();
-
-var search = (function () {
-    return function search(facets) {
-        searchResults.cards.remove(function () { return true; });
-
-        var terms = "";
-        for (var i = 0; i < facets.length; i++) {
-            for (var k in facets[i]) {
-                terms += (terms == '' ? "?" : "&") + encodeURIComponent(k) + "=" + encodeURIComponent(facets[i][k]);
-            }
-        }
-
-        $.ajax({
-            url: Urls.cardSearch + terms,
-            dataType: 'json',
-            success: function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    searchResults.cards.push(ko.mapping.fromJS(data[i]));
-                }
-            },
-            error: function (_, status) {
-                // TODO: Switch to a message in the DOM once we have a target for search results.
-                alert("There was an error communicating with the server.");
-            }
-        });
-    }
 })();
 
 $(function () {
@@ -56,7 +35,7 @@ $(function () {
         container: $('#card-search'),
         query: '',
         callbacks: {
-            search: function (query, searchCollection) { search(searchCollection.facets()); },
+            search: function (query, searchCollection) { search(1); },
             facetMatches: function (callback) { callback(['artist', 'cost', 'color', 'expansion', 'name', 'owned', 'power', 'rarity', 'toughness', 'type']); },
             valueMatches: function (facet, searchTerm, callback) {
                 switch (facet.toLowerCase()) {
@@ -77,6 +56,35 @@ $(function () {
         }
     });
 
+    search = function (page) {
+        searchResults.Cards.remove(function () { return true; });
+
+        var facets = visualSearch.searchQuery.facets();
+        var terms = page > 1 ? ("?page=" + page) : "";
+        for (var i = 0; i < facets.length; i++) {
+            for (var k in facets[i]) {
+                terms += (terms == '' ? "?" : "&") + encodeURIComponent(k) + "=" + encodeURIComponent(facets[i][k]);
+            }
+        }
+
+        $.ajax({
+            url: Urls.cardSearch + terms,
+            dataType: 'json',
+            success: function (data) {
+                searchResults.Page(data.Page);
+                searchResults.Pages(data.Pages);
+
+                for (var i = 0; i < data.Cards.length; i++) {
+                    searchResults.Cards.push(ko.mapping.fromJS(data.Cards[i]));
+                }
+            },
+            error: function (_, status) {
+                // TODO: Switch to a message in the DOM once we have a target for search results.
+                alert("There was an error communicating with the server.");
+            }
+        });
+    };
+
     visualSearch.searchBox.value("owned: true");
-    search([{ owned: "true"}]);
+    search(1);
 });

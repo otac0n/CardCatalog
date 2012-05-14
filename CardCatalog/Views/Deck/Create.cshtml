@@ -9,18 +9,23 @@
     <script>Urls.cardSearch = '@Url.Action("search", "card")';</script>
     <script>
         var expansions = @Html.Json(expansions.Select(e => e.Name));
-        var initialDeck = { cards: [] };
+        var initialDeck = { Cards: [] };
     </script>
     <script src="@Url.Content("~/Scripts/deck-editor.js")" type="text/javascript"></script>
 }
 
 <h2>@ViewBag.Title</h2>
 
-<div id="deck" data-bind="foreach: cards">
+<div id="deck" data-bind="foreach: Cards">
     <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $root.removeCard($data); }" />
 </div>
 
 <div id="card-search"></div>
-<div id="search-results" data-bind="foreach: cards">
-    <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function() { $root.addCard($data); }" />
+<div id="search-results">
+    <div style="width: 20px; height: 650px; background-color: #eee; border: 1px solid #aaa; float: left; margin-right: 10px;" data-bind="click: function () { $root.pageChange(-1); }, visible: $data.Page() > 1">&lt;</div>
+    <div style="width: 20px; height: 650px; background-color: #eee; border: 1px solid #aaa; float: right; margin-left: 10px;" data-bind="click: function () { $root.pageChange(+1); }, visible: $data.Page() < $data.Pages()">&gt;</div>
+    <div data-bind="foreach: Cards">
+        <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function() { $root.addCard($data); }" />
+    </div>
+    <span data-bind="text: 'Page ' + $data.Page() + ' of ' + $data.Pages()"></span>
 </div>
