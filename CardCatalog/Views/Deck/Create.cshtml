@@ -44,7 +44,7 @@
             query: '',
             callbacks: {
                 search: function (query, searchCollection) { search(searchCollection.facets()); },
-                facetMatches: function (callback) { callback([ 'artist', 'cost', 'color', 'expansion', 'name', 'power', 'rarity', 'toughness', 'type' ]); },
+                facetMatches: function (callback) { callback([ 'artist', 'cost', 'color', 'expansion', 'name', 'owned', 'power', 'rarity', 'toughness', 'type' ]); },
                 valueMatches: function (facet, searchTerm, callback) {
                     switch (facet.toLowerCase()) {
                         case 'color':
@@ -52,6 +52,9 @@
                             break;
                         case 'expansion':
                             callback(@Html.Json(expansions.Select(e => e.Name)), { preserveMatches: true });
+                            break;
+                        case 'owned':
+                            callback(['true', 'false'], { preserveMatches: true });
                             break;
                         case 'rarity':
                             callback(['basic', 'common', 'uncommon', 'rare', 'mythic'], { preserveMatches: true });

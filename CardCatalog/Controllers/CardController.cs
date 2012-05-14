@@ -125,6 +125,18 @@ namespace CardCatalog.Controllers
                             searchQuery = searchQuery.WhereContains("Name", term.Value);
                             break;
 
+                        case "owned":
+                            if (term.Value == "true")
+                            {
+                                searchQuery = searchQuery.WhereGreaterThanOrEqual("Owned", 1);
+                            }
+                            else
+                            {
+                                searchQuery = searchQuery.WhereLessThan("Owned", 1);
+                            }
+
+                            break;
+
                         case "power":
                             searchQuery = searchQuery.WhereEquals("Power", term.Value);
                             break;
