@@ -69,7 +69,7 @@ namespace CardCatalog
             {
                 client.Encoding = Encoding.UTF8;
                 var normalizedHtml = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + id);
-                var printedHtml = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=tru&multiverseid=" + id);
+                var printedHtml = client.DownloadString("http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=" + id);
                 normalizedDoc.LoadHtml(normalizedHtml);
                 printedDoc.LoadHtml(printedHtml);
             }
