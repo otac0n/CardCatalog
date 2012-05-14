@@ -173,11 +173,12 @@ namespace CardCatalog.Controllers
                 RavenQueryStatistics stats;
                 var results = searchQuery.OrderBy("Name").Skip((page - 1) * ResultsPerPage).Take(ResultsPerPage).Statistics(out stats).Include(x => x.CardId).ToList();
                 var cards = session.Load<Card>(results.Select(r => r.CardId));
+                var pages = (stats.TotalResults + ResultsPerPage - 1) / ResultsPerPage;
 
                 var output = new
                 {
-                    Page = page,
-                    Pages = (stats.TotalResults + ResultsPerPage - 1) / ResultsPerPage,
+                    Page = pages == 0 ? 0 : page,
+                    Pages = pages,
                     Cards = cards,
                 };
 
