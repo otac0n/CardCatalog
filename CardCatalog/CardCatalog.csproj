@@ -105,6 +105,7 @@
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\CardFace.cs" />
     <Compile Include="Models\Deck.cs" />
+    <Compile Include="Models\DeckViewModel.cs" />
     <Compile Include="Models\Expansion.cs" />
     <Compile Include="Models\Indexes\CardOwnershipCount.cs" />
     <Compile Include="Models\Indexes\CardSearch.cs" />

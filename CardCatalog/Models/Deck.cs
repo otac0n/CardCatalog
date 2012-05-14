@@ -7,14 +7,22 @@ namespace CardCatalog.Models
 {
     public class Deck
     {
-        public string Name { get; set; }
+        public Deck()
+        {
+            this.Columns = new List<Column>();
+        }
 
-        public string OwnerId { get; set; }
+        public int Id { get; set; }
 
-        public List<string> Columns { get; set; }
+        public List<Column> Columns { get; set; }
 
         public class Column
         {
+            public Column()
+            {
+                this.CardIds = new List<string>();
+            }
+
             public List<string> CardIds { get; set; }
         }
     }

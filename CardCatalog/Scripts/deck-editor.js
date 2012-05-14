@@ -7,8 +7,15 @@ var search = function () { };
 var deck = (function () {
     var vm = ko.mapping.fromJS(initialDeck);
 
-    vm.removeCard = function (card) {
-        vm.Cards.remove(card);
+    vm.addCard = function (card) {
+        var cols = vm.Columns();
+
+        if (cols.length == 0) {
+            vm.Columns.push(ko.mapping.fromJS({ Cards: [] }));
+            cols = vm.Columns();
+        }
+
+        cols[cols.length - 1].Cards.push(ko.mapping.fromJS(card));
     };
 
     ko.applyBindings(vm, $("#deck")[0]);
@@ -19,7 +26,7 @@ var searchResults = (function () {
     var vm = ko.mapping.fromJS({ Cards: [], Page: 0, Pages: 0 });
 
     vm.addCard = function (card) {
-        deck.Cards.push(ko.mapping.fromJS(ko.mapping.toJS(card)));
+        deck.addCard(ko.mapping.toJS(card));
     };
 
     vm.pageChange = function (delta) {
