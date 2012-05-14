@@ -115,6 +115,7 @@
     <Compile Include="TaskEx.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\deck-editor.css" />
     <Content Include="Content\embed\icons\cancel_search.png" />
     <Content Include="Content\embed\icons\search_glyph.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />

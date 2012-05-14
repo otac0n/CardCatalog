@@ -1,0 +1,24 @@
+﻿.deck-card
+{
+    float: left;
+}
+
+.pager-left, .pager-right
+{
+    width: 20px;
+    height: 650px;
+    background-color: #eee;
+    border: 1px solid #aaa;
+}
+
+.pager-left
+{
+    float: left;
+    margin-right: 10px;
+}
+
+.pager-right
+{
+    float: right;
+    margin-left: 10px;
+}
