@@ -175,10 +175,9 @@ namespace CardCatalog.Controllers
                 var cards = session.Load<Card>(results.Select(r => r.CardId));
                 var pages = (stats.TotalResults + ResultsPerPage - 1) / ResultsPerPage;
 
-                var orPredicate = BuildOrPredicate(cards.Select(c => "cards/" + c.Id).ToList());
                 var ownershipCounts = session
                     .Query<CardOwnershipCount.Result, CardOwnershipCount>()
-                    .Where(orPredicate)
+                    .Where(r => r.CardId.In(cards.Select(c => "cards/" + c.Id)))
                     .ToLookup(o => o.CardId, o => o.Count);
 
                 var output = new
@@ -196,36 +195,6 @@ namespace CardCatalog.Controllers
 
                 return Json(output, JsonRequestBehavior.AllowGet);
             }
-        }
-
-        private Expression<Func<CardOwnershipCount.Result, bool>> BuildOrPredicate(IList<string> cardIds)
-        {
-            var r = Expression.Parameter(typeof(CardOwnershipCount.Result), "r");
-
-            Expression or;
-
-            if (cardIds.Count == 0)
-            {
-                or = Expression.Constant(false);
-            }
-            else
-            {
-                or = null;
-                foreach (var c in cardIds)
-                {
-                    var next = Expression.Equal(Expression.Property(r, "CardId"), Expression.Constant(c));
-                    if (or == null)
-                    {
-                        or = next;
-                    }
-                    else
-                    {
-                        or = Expression.OrElse(or, next);
-                    }
-                }
-            }
-
-            return Expression.Lambda<Func<CardOwnershipCount.Result, bool>>(or, r);
         }
     }
 }
