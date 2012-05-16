@@ -3,14 +3,27 @@ using System.Linq;
 using System.Web.Mvc;
 using CardCatalog.Models;
 using CardCatalog.Models.Indexes;
+using Raven.Client;
+using Raven.Client.Linq;
 
 namespace CardCatalog.Controllers
 {
     public class DeckController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
-            return View();
+            const int ResultsPerPage = 50;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            using (var session = MvcApplication.DocumentStore.OpenSession())
+            {
+                var results = session.Query<Deck>().Skip((page - 1) * ResultsPerPage).Take(ResultsPerPage).ToList();
+
+                return View(results);
+            }
         }
 
         public ActionResult Create()
