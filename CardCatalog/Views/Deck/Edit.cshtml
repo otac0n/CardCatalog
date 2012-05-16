@@ -22,6 +22,8 @@
 @using (Html.BeginForm())
 {
 <div id="deck">
+    Name: @Html.TextBoxFor(m => m.Name)
+
     <!-- ko foreach: Columns -->
     <!-- ko foreach: Cards -->
     <input type="hidden" data-bind="value: 'cards/' + $data.Id(), attr: { name: 'Columns[' + $root.Columns.indexOf($parent) + '].CardIds[' + $index() + ']' }" />

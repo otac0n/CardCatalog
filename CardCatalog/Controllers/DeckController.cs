@@ -36,17 +36,23 @@ namespace CardCatalog.Controllers
                 session.Store(deck);
                 session.SaveChanges();
 
-                return RedirectToAction("edit", new { id = deck.Id });
+                return RedirectToAction("edit", new { id = deck.Id, slug = deck.Name.Slugify() });
             }
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int id, string slug = "")
         {
             DeckViewModel viewModel;
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
                 ViewBag.Expansions = session.Query<ExpansionCardCount.Result, ExpansionCardCount>().Take(1000).ToList();
                 var deck = session.Load<Deck>(id);
+
+                if (deck.Name.Slugify() != slug)
+                {
+                    return RedirectToAction("edit", new { id = deck.Id, slug = deck.Name.Slugify() });
+                }
+
                 var cards = session.Load<Card>(deck.Columns.SelectMany(c => c.CardIds).Distinct()).ToDictionary(c => "cards/" + c.Id, c => c);
 
                 viewModel = DeckViewModel.Convert(deck, cards);
@@ -69,7 +75,7 @@ namespace CardCatalog.Controllers
                 session.Store(deck);
                 session.SaveChanges();
 
-                return RedirectToAction("edit", new { id = deck.Id });
+                return RedirectToAction("edit", new { id = deck.Id, slug = deck.Name.Slugify() });
             }
         }
     }

@@ -12,6 +12,8 @@ namespace CardCatalog.Models
 
         public int Id { get; set; }
 
+        public string Name { get; set; }
+
         public List<Column> Columns { get; set; }
 
         public class Column
@@ -37,6 +39,7 @@ namespace CardCatalog.Models
             return new DeckViewModel
             {
                 Id = deck.Id,
+                Name = deck.Name,
                 Columns = deck.Columns.Select(c => Column.Convert(c, cards)).ToList(),
             };
         }

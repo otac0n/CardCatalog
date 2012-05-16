@@ -11,6 +11,8 @@ namespace CardCatalog.Models
 
         public int Id { get; set; }
 
+        public string Name { get; set; }
+
         public List<Column> Columns { get; set; }
 
         public class Column
