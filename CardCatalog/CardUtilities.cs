@@ -145,7 +145,7 @@ namespace CardCatalog
             var id = int.Parse(Regex.Match(cardImage.Attributes["src"].Value, @"multiverseid=(?<id>\d+)").Groups["id"].Value);
 
             var nameDiv = node.SelectSingleNode("./descendant::div[@class='label' and text()[contains(.,'Card Name:')]]/following-sibling::*[1]");
-            var name = HtmlEntity.DeEntitize(nameDiv.InnerText).Trim();
+            var name = HtmlEntity.DeEntitize(nameDiv.InnerText).Trim().Replace("’", "'");
 
             var manaImages = node.SelectNodes("./descendant::div[@class='label' and text()[contains(.,'Mana Cost:')]]/following-sibling::*[1]/img");
             var mana = manaImages == null
