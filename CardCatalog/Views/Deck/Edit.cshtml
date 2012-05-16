@@ -30,10 +30,12 @@
     <!-- /ko -->
     <!-- /ko -->
 
-    <div class="deck-column" data-bind="foreach: Columns">
-    <div class="deck-card" data-bind="foreach: Cards">
-        <img width="100" data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $parent.Cards.remove($data); }" />
-    </div>
+    <div class="deck-container" data-bind="foreach: Columns">
+        <div class="deck-column" data-bind="foreach: Cards">
+            <div class="deck-card">
+                <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $parent.Cards.remove($data); }" />
+            </div>
+        </div>
     </div>
     <div style="clear: both;"></div>
 </div>

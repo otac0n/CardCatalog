@@ -3,6 +3,11 @@
     float: left;
 }
 
+.deck-card img
+{
+    width: 100px;
+}
+
 .pager-left, .pager-right
 {
     width: 20px;
