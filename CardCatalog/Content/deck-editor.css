@@ -1,11 +1,18 @@
-﻿.deck-card
+﻿.deck-column
 {
     float: left;
+    padding: 0 0 275px 0;
+}
+
+.deck-card
+{
+    margin: 0 0 -275px 0;
 }
 
 .deck-card img
 {
-    width: 100px;
+    width: 223px;
+    height: 310px;
 }
 
 .pager-left, .pager-right
