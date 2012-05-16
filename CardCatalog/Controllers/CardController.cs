@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Web.Mvc;
@@ -173,15 +175,57 @@ namespace CardCatalog.Controllers
                 var cards = session.Load<Card>(results.Select(r => r.CardId));
                 var pages = (stats.TotalResults + ResultsPerPage - 1) / ResultsPerPage;
 
+                var orPredicate = BuildOrPredicate(cards.Select(c => "cards/" + c.Id).ToList());
+                var ownershipCounts = session
+                    .Query<CardOwnershipCount.Result, CardOwnershipCount>()
+                    .Where(orPredicate)
+                    .ToLookup(o => o.CardId, o => o.Count);
+
                 var output = new
                 {
                     Page = pages == 0 ? 0 : page,
                     Pages = pages,
-                    Cards = cards,
+                    CardsInfo = (from c in cards
+                                 let ownedCount = ownershipCounts["cards/" + c.Id].SingleOrDefault()
+                                 select new
+                                 {
+                                     Card = c,
+                                     OwnedCount = ownedCount,
+                                 }).ToList()
                 };
 
                 return Json(output, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        private Expression<Func<CardOwnershipCount.Result, bool>> BuildOrPredicate(IList<string> cardIds)
+        {
+            var r = Expression.Parameter(typeof(CardOwnershipCount.Result), "r");
+
+            Expression or;
+
+            if (cardIds.Count == 0)
+            {
+                or = Expression.Constant(false);
+            }
+            else
+            {
+                or = null;
+                foreach (var c in cardIds)
+                {
+                    var next = Expression.Equal(Expression.Property(r, "CardId"), Expression.Constant(c));
+                    if (or == null)
+                    {
+                        or = next;
+                    }
+                    else
+                    {
+                        or = Expression.OrElse(or, next);
+                    }
+                }
+            }
+
+            return Expression.Lambda<Func<CardOwnershipCount.Result, bool>>(or, r);
         }
     }
 }

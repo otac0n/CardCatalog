@@ -23,7 +23,7 @@ var deck = (function () {
 })();
 
 var searchResults = (function () {
-    var vm = ko.mapping.fromJS({ Cards: [], Page: 0, Pages: 0 });
+    var vm = ko.mapping.fromJS({ CardsInfo: [], Page: 0, Pages: 0 });
 
     vm.addCard = function (card) {
         deck.addCard(ko.mapping.toJS(card));
@@ -64,7 +64,7 @@ $(function () {
     });
 
     search = function (page) {
-        searchResults.Cards.remove(function () { return true; });
+        searchResults.CardsInfo.remove(function () { return true; });
 
         var facets = visualSearch.searchQuery.facets();
         var terms = page > 1 ? ("?page=" + page) : "";
@@ -81,8 +81,8 @@ $(function () {
                 searchResults.Page(data.Page);
                 searchResults.Pages(data.Pages);
 
-                for (var i = 0; i < data.Cards.length; i++) {
-                    searchResults.Cards.push(ko.mapping.fromJS(data.Cards[i]));
+                for (var i = 0; i < data.CardsInfo.length; i++) {
+                    searchResults.CardsInfo.push(data.CardsInfo[i]);
                 }
             },
             error: function (_, status) {
