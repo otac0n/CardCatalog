@@ -9,6 +9,13 @@
     margin: 0 0 -275px 0;
 }
 
+.deck-card-placeholder
+{
+    width: 223px;
+    height: 310px;
+    margin: 0 0 -275px 0;
+}
+
 .deck-card img
 {
     width: 223px;

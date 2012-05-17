@@ -6,6 +6,7 @@
 }
 
 @section scripts {
+    <script src="@Url.Content("~/Scripts/knockout-sortable.min.js")" type="text/javascript"></script>
     <script>Urls.cardSearch = '@Url.Action("search", "card")';</script>
     <script>
         var expansions = @Html.Json(expansions.Select(e => e.Name));
@@ -31,7 +32,7 @@
     <!-- /ko -->
 
     <div class="deck-container" data-bind="foreach: Columns">
-        <div class="deck-column" data-bind="foreach: Cards">
+        <div class="deck-column" data-bind="sortable: { data: Cards, options: { placeholder: 'deck-card-placeholder', tolerance: 'pointer', cursorAt: { left: 10, top: 10 } } }">
             <div class="deck-card">
                 <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $parent.Cards.remove($data); }" />
             </div>
