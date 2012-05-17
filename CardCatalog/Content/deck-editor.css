@@ -13,6 +13,7 @@
 {
     width: 223px;
     height: 310px;
+    border-radius: 9px;
 }
 
 .pager-left, .pager-right
