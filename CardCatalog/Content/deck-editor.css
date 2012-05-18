@@ -1,6 +1,7 @@
 ﻿.deck-column
 {
     float: left;
+    width: 223px;
     padding: 0 0 275px 0;
 }
 

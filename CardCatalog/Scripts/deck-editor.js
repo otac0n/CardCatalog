@@ -7,6 +7,10 @@ var search = function () { };
 var deck = (function () {
     var vm = ko.mapping.fromJS(initialDeck);
 
+    while (vm.Columns().length < 4) {
+        vm.Columns.push(ko.mapping.fromJS({ Cards: [] }));
+    }
+
     vm.addCard = function (card) {
         var cols = vm.Columns();
 
