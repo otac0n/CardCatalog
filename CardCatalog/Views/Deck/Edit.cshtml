@@ -26,6 +26,7 @@
     Name: @Html.TextBoxFor(m => m.Name)
 
     <!-- ko foreach: Columns -->
+    <input type="hidden" data-bind="value: Cards().length, attr: { name: 'Columns[' + $root.Columns.indexOf($data) + '].Cards.Count' }" />
     <!-- ko foreach: Cards -->
     <input type="hidden" data-bind="value: 'cards/' + $data.Id(), attr: { name: 'Columns[' + $root.Columns.indexOf($parent) + '].CardIds[' + $index() + ']' }" />
     <!-- /ko -->
