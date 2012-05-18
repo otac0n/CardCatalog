@@ -1,23 +1,30 @@
-﻿.deck-column
+﻿.deck-container
 {
-    float: left;
-    width: 223px;
-    padding: 0 0 275px 0;
+}
+
+.deck-column
+{
+    display: inline-block;
+    vertical-align: top;
+
+    width: 140px;
+    margin-right: 5px;
+    padding: 0px 0px 173px 0px;
 }
 
 .deck-card
 {
     position: relative;
     overflow: visible;
-    width: 223px;
-    height: 35px;
+    width: 140px;
+    height: 22px;
 }
 
 .deck-card img
 {
-    width: 223px;
-    height: 310px;
-    border-radius: 9px;
+    width: 140px;
+    height: 195px;
+    border-radius: 6px;
 }
 
 .pager-left, .pager-right
