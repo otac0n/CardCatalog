@@ -1,4 +1,16 @@
-﻿.deck-container
+﻿#deck
+{
+    position: relative;
+}
+
+#active-card
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.deck-container
 {
 }
 

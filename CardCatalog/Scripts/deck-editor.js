@@ -6,6 +6,7 @@ var search = function () { };
 
 var deck = (function () {
     var vm = ko.mapping.fromJS(initialDeck);
+    vm.ActiveCard = ko.observable(null);
 
     while (vm.Columns().length < 5) {
         vm.Columns.push(ko.mapping.fromJS({ Cards: [] }));
