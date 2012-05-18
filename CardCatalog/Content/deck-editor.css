@@ -6,14 +6,10 @@
 
 .deck-card
 {
-    margin: 0 0 -275px 0;
-}
-
-.deck-card-placeholder
-{
+    position: relative;
+    overflow: visible;
     width: 223px;
-    height: 310px;
-    margin: 0 0 -275px 0;
+    height: 35px;
 }
 
 .deck-card img
