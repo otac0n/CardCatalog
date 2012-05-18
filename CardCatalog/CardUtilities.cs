@@ -257,7 +257,7 @@ namespace CardCatalog
                 doc.LoadHtml(html);
             }
 
-            return (from HtmlNode node in doc.DocumentNode.SelectNodes("//*[@id='autoCompleteSourceBoxsetAddText0_InnerTextBoxcontainer']/a")
+            return (from HtmlNode node in doc.DocumentNode.SelectNodes("//*[@id='autoCompleteSourceBoxsetAddText0_InnerTextBoxcontainer']/a") ?? Enumerable.Empty<HtmlNode>()
                     let text = node.InnerText
                     select HtmlEntity.DeEntitize(text).Trim()).ToList();
         }
