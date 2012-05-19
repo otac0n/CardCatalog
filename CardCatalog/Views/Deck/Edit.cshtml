@@ -38,7 +38,7 @@
                 <!-- /ko -->
 
                 <div class="deck-container" data-bind="foreach: Columns">
-                    <div class="deck-column" data-bind="sortable: { data: Cards, options: { connectedWith: '.deck-column', placeholder: 'deck-card', tolerance: 'pointer', cursorAt: { left: 10, top: 10 } } }">
+                    <div class="deck-column" data-bind="sortable: { data: Cards, afterMove: $root.ensureEmptyColumn, options: { connectedWith: '.deck-column', placeholder: 'deck-card', tolerance: 'pointer', cursorAt: { left: 10, top: 10 } } }">
                         <div class="deck-card" data-bind="event: { mouseover: function () { $root.ActiveCard($data); }, mouseout: function () { $root.ActiveCard(null); } }">
                             <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $parent.Cards.remove($data); }" />
                         </div>

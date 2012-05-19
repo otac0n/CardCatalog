@@ -8,22 +8,28 @@ var deck = (function () {
     var vm = ko.mapping.fromJS(initialDeck);
     vm.ActiveCard = ko.observable(null);
 
-    while (vm.Columns().length < 5) {
-        vm.Columns.push(ko.mapping.fromJS({ Cards: [] }));
-    }
-
-    vm.addCard = function (card) {
+    vm.ensureEmptyColumn = function () {
         var cols = vm.Columns();
 
-        if (cols.length == 0) {
-            vm.Columns.push(ko.mapping.fromJS({ Cards: [] }));
-            cols = vm.Columns();
+        for (var i = cols.length - 1; i > 0; i--) {
+            if (cols[i].Cards().length == 0 &&
+                cols[i - 1].Cards().length == 0) {
+                vm.Columns.splice(i, 1);
+                cols = vm.Columns();
+            }
         }
 
-        cols[cols.length - 1].Cards.push(ko.mapping.fromJS(card));
+        if (cols.length == 0 || cols[cols.length - 1].Cards().length != 0) {
+            vm.Columns.push(ko.mapping.fromJS({ Cards: [] }));
+        }
+    };
+
+    vm.addCard = function (card) {
+        vm.Columns()[0].Cards.push(ko.mapping.fromJS(card));
     };
 
     ko.applyBindings(vm, $("#deck")[0]);
+    vm.ensureEmptyColumn();
     return vm;
 })();
 
