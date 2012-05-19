@@ -56,10 +56,15 @@
             <div id="search-results">
                 <div class="pager-left" data-bind="click: function () { $root.pageChange(-1); }, visible: $data.Page() > 1">&lt;</div>
                 <div class="pager-right" data-bind="click: function () { $root.pageChange(+1); }, visible: $data.Page() < $data.Pages()">&gt;</div>
-                <div data-bind="foreach: CardsInfo">
-                    <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Card.Id).replace('__side__', 0) }, click: function() { $root.addCard($data.Card); }" />
-                    <span data-bind="text: $data.OwnedCount"></span>
+                <!-- ko foreach: CardsInfo -->
+                <div class="search-result">
+                    <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Card.Id).replace('__side__', 0) }" />
+                    <div class="owned-count" data-bind="text: $data.OwnedCount"></div>
+                    <div class="add-overlay">
+                        <button data-bind="click: function() { $root.addCard($data.Card); }">Add</button>
+                    </div>
                 </div>
+                <!-- /ko -->
                 <span data-bind="text: 'Page ' + $data.Page() + ' of ' + $data.Pages()"></span>
             </div>
         </div>

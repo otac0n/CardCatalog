@@ -58,3 +58,59 @@
     float: right;
     margin-left: 10px;
 }
+
+.search-result
+{
+    width: 223px;
+    height: 310px;
+    display: inline-block;
+    position: relative;
+}
+
+.search-result img
+{
+    border-radius: 9px;
+}
+
+.owned-count
+{
+    font-size: 12px;
+    position: absolute;
+    left: 23px;
+    top: 40px;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid black;
+    padding: 3px;
+}
+
+.add-overlay
+{
+    display: none;
+
+    width: 223px;
+    height: 310px;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    background: none;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 9px;
+
+    text-align: center;
+}
+
+.add-overlay button
+{
+    text-align: center;
+    filter: alpha(opacity=100);
+    opacity: 1.0;
+    position: relative;
+    top: 120px;
+}
+
+.search-result:hover .add-overlay
+{
+    display: block;
+}
