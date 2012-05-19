@@ -4,4 +4,5 @@
 *.user
 *.ncrunch*
 *.[Cc]ache
+*.Publish.xml
 /CardCatalog/Images/
