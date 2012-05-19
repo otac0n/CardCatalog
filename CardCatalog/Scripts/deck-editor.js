@@ -99,4 +99,6 @@ $(function () {
 
     visualSearch.searchBox.value("owned: true");
     search(1);
+
+    $("#tabs").tabs();
 });
