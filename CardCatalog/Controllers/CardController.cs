@@ -99,80 +99,83 @@ namespace CardCatalog.Controllers
 
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                var searchQuery = session.Advanced.LuceneQuery<CardSearch.Result, CardSearch>();
-                bool needsAnd = false;
-                foreach (var term in search)
-                {
-                    if (needsAnd)
-                    {
-                        searchQuery = searchQuery.AndAlso();
-                    }
+                var searchQuery = session.Query<CardSearch.Result, CardSearch>();
 
-                    needsAnd = true;
+                foreach (var termIterm in search)
+                {
+                    var term = termIterm; // Capture variable for closure.
 
                     switch (term.Field.ToLower())
                     {
                         case "artist":
-                            searchQuery = searchQuery.WhereContains("Artist", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Artist == term.Value);
                             break;
 
                         case "cost":
-                            searchQuery = searchQuery.WhereEquals("ConvertedManaCost", term.Value);
+                            var value = decimal.Parse(term.Value);
+                            searchQuery = searchQuery.Where(r => r.ConvertedManaCost == value);
                             break;
 
                         case "color":
-                            searchQuery = searchQuery.WhereContains("Colors", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Colors == term.Value);
                             break;
 
                         case "expansion":
-                            searchQuery = searchQuery.WhereEquals("Expansion", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Expansion == term.Value);
                             break;
 
                         case "name":
-                            searchQuery = searchQuery.WhereContains("Name", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Name == term.Value);
                             break;
 
                         case "owned":
                             if (term.Value == "true")
                             {
-                                searchQuery = searchQuery.WhereGreaterThanOrEqual("Owned", 1);
+                                searchQuery = searchQuery.Where(r => r.Owned >= 1);
                             }
                             else
                             {
-                                searchQuery = searchQuery.WhereLessThan("Owned", 1);
+                                searchQuery = searchQuery.Where(r => r.Owned < 1);
                             }
 
                             break;
 
                         case "power":
-                            searchQuery = searchQuery.WhereEquals("Power", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Power == term.Value);
                             break;
 
                         case "rarity":
-                            searchQuery = searchQuery.WhereEquals("Rarity", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Rarity == term.Value);
                             break;
 
                         case "toughness":
-                            searchQuery = searchQuery.WhereEquals("Toughness", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Toughness == term.Value);
                             break;
 
                         case "type":
-                            searchQuery = searchQuery.WhereContains("Types", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Types == term.Value);
                             break;
 
                         case "text":
-                            searchQuery = searchQuery.WhereContains("Text", term.Value);
+                            searchQuery = searchQuery.Where(r => r.Text == term.Value);
                             break;
 
                         default:
-                            searchQuery = searchQuery.WhereEquals(term.Field, term.Value);
+                            throw new ArgumentException("Unknown query parameter.", term.Field);
                             break;
                     }
                 }
 
                 RavenQueryStatistics stats;
-                var results = searchQuery.OrderBy("Name").Skip((page - 1) * ResultsPerPage).Take(ResultsPerPage).Statistics(out stats).Include(x => x.CardId).ToList();
-                var cards = session.Load<Card>(results.Select(r => r.CardId));
+                var results = searchQuery
+                    .Include(x => x.CardId)
+                    .Statistics(out stats)
+                    .OrderBy(r => r.Name)
+                    .Skip((page - 1) * ResultsPerPage)
+                    .Take(ResultsPerPage)
+                    .ToList();
+                var cards = session
+                    .Load<Card>(results.Select(r => r.CardId));
                 var pages = (stats.TotalResults + ResultsPerPage - 1) / ResultsPerPage;
 
                 var ownershipCounts = session
