@@ -28,7 +28,40 @@ var deck = (function () {
         vm.Columns()[0].Cards.push(ko.mapping.fromJS(card));
     };
 
+    vm.Stats = {
+        CardCount: ko.computed(function () {
+            var count = 0;
+
+            var cols = this.Columns();
+            for (var i = 0; i < cols.length; i++) {
+                count += cols[i].Cards().length;
+            }
+
+            return count;
+        }, vm),
+        CardTypes: ko.computed(function () {
+            var types = {};
+
+            var cols = this.Columns();
+            for (var i = 0; i < cols.length; i++) {
+                var cards = cols[i].Cards();
+                for (var c = 0; c < cards.length; c++) {
+                    var t = cards[c].NormalizedFaces()[0].Types();
+                    types[t] = (types[t] || 0) + 1;
+                }
+            }
+
+            var results = [];
+            for (var t in types) {
+                results.push({ Type: t, Count: types[t] });
+            }
+
+            return results;
+        }, vm)
+    };
+
     ko.applyBindings(vm, $("#deck")[0]);
+    ko.applyBindings(vm, $("#stats-tab")[0]);
     vm.ensureEmptyColumn();
     return vm;
 })();

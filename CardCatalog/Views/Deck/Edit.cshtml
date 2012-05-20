@@ -26,6 +26,7 @@
         <ul>
             <li><a href="#search-tab">Search / Add</a></li>
             <li><a href="#organize-tab">Organize</a></li>
+            <li><a href="#stats-tab">Stats</a></li>
         </ul>
         <div id="organize-tab">
             Name: @Html.TextBoxFor(m => m.Name)
@@ -68,6 +69,19 @@
                 </div>
                 <!-- /ko -->
                 <span data-bind="text: 'Page ' + $data.Page() + ' of ' + $data.Pages()"></span>
+            </div>
+        </div>
+        <div id="stats-tab" data-bind="with: Stats">
+            <div>Total Cards: <span data-bind="text: CardCount"></span></div>
+            <div>
+                <table>
+                    <thead>
+                        <tr><th>Type</th><th>Count</th></tr>
+                    </thead>
+                    <tbody data-bind="foreach: CardTypes">
+                        <tr><td data-bind="text: Type"></td><td data-bind="text: Count"></td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
