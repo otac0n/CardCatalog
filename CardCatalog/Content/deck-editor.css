@@ -33,6 +33,11 @@
     height: 22px;
 }
 
+.deck-card:hover
+{
+    margin-bottom: 173px;
+}
+
 .deck-card img
 {
     width: 140px;
