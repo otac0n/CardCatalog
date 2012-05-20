@@ -28,6 +28,16 @@ var deck = (function () {
         vm.Columns()[0].Cards.push(ko.mapping.fromJS(card));
     };
 
+    var primaryTypes = [
+        { match: /creature/i, type: "Creature" },
+        { match: /instant/i, type: "Instant" },
+        { match: /artifact/i, type: "Artifact" },
+        { match: /sorcery/i, type: "Sorcery" },
+        { match: /land/i, type: "Land" },
+        { match: /enchantment/i, type: "Enchantment" },
+        { match: /planeswalker/i, type: "Planeswalker" },
+    ];
+
     vm.Stats = {
         CardCount: ko.computed(function () {
             var count = 0;
@@ -47,7 +57,14 @@ var deck = (function () {
                 var cards = cols[i].Cards();
                 for (var c = 0; c < cards.length; c++) {
                     var t = cards[c].NormalizedFaces()[0].Types();
-                    types[t] = (types[t] || 0) + 1;
+
+                    for (var p = 0; p < primaryTypes.length; p++) {
+                        var pt = primaryTypes[p];
+                        if (pt.match.test(t)) {
+                            types[pt.type] = (types[pt.type] || 0) + 1;
+                            break;
+                        }
+                    }
                 }
             }
 

@@ -72,7 +72,6 @@
             </div>
         </div>
         <div id="stats-tab" data-bind="with: Stats">
-            <div>Total Cards: <span data-bind="text: CardCount"></span></div>
             <div>
                 <table>
                     <thead>
@@ -81,6 +80,9 @@
                     <tbody data-bind="foreach: CardTypes">
                         <tr><td data-bind="text: Type"></td><td data-bind="text: Count"></td></tr>
                     </tbody>
+                    <tfoot>
+                        <tr><th>Total:</th><td data-bind="text: CardCount"></td></tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
