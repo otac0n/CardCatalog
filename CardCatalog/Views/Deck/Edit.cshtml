@@ -46,7 +46,9 @@
                 </div>
 
                 <div id="active-card" data-bind="with: ActiveCard">
-                    <img data-bind="if: $data != null, attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }" />
+                    <!-- ko foreach: NormalizedFaces -->
+                        <img class="card" data-bind="attr: { src: Urls.imageCard.replace('__id__', $parent.Id()).replace('__side__', $index()) }" />
+                    <!-- /ko -->
                 </div>
             </div>
             <button type="submit">Save</button>
