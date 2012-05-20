@@ -50,7 +50,7 @@
     var side = faceInfo.Side;
     <fieldset class="card-face">
         <legend class="card-face-name">@face.Name</legend>
-        <figure class="card-face-image"><img src="@Url.Action("Card", "Image", new { id = cardId, side = side })" /></figure>
+        <figure class="card-face-image"><img class="card" src="@Url.Action("Card", "Image", new { id = cardId, side = side })" /></figure>
         <section class="card-face-properties">
             <dl>
                 @if (face.ManaCost != null)

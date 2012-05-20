@@ -62,15 +62,8 @@
 
 .search-result
 {
-    width: 223px;
-    height: 310px;
     display: inline-block;
     position: relative;
-}
-
-.search-result img
-{
-    border-radius: 9px;
 }
 
 .owned-count
@@ -89,15 +82,12 @@
 {
     display: none;
 
-    width: 223px;
-    height: 310px;
     position: absolute;
     left: 0;
     top: 0;
 
     background: none;
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 9px;
 
     text-align: center;
 }

@@ -31,16 +31,16 @@
             Name: @Html.TextBoxFor(m => m.Name)
             <div id="deck">
                 <!-- ko foreach: Columns -->
-                <input type="hidden" data-bind="value: Cards().length, attr: { name: 'Columns[' + $root.Columns.indexOf($data) + '].Cards.Count' }" />
-                <!-- ko foreach: Cards -->
-                <input type="hidden" data-bind="value: 'cards/' + $data.Id(), attr: { name: 'Columns[' + $root.Columns.indexOf($parent) + '].CardIds[' + $index() + ']' }" />
-                <!-- /ko -->
+                    <input type="hidden" data-bind="value: Cards().length, attr: { name: 'Columns[' + $root.Columns.indexOf($data) + '].Cards.Count' }" />
+                    <!-- ko foreach: Cards -->
+                        <input type="hidden" data-bind="value: 'cards/' + $data.Id(), attr: { name: 'Columns[' + $root.Columns.indexOf($parent) + '].CardIds[' + $index() + ']' }" />
+                    <!-- /ko -->
                 <!-- /ko -->
 
                 <div class="deck-container" data-bind="foreach: Columns">
                     <div class="deck-column" data-bind="sortable: { data: Cards, afterMove: $root.ensureEmptyColumn, options: { connectedWith: '.deck-column', placeholder: 'deck-card', tolerance: 'pointer', cursorAt: { left: 10, top: 10 } } }">
                         <div class="deck-card" data-bind="event: { mouseover: function () { $root.ActiveCard($data); }, mouseout: function () { $root.ActiveCard(null); } }">
-                            <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $parent.Cards.remove($data); }" />
+                            <img class="card" data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Id()).replace('__side__', 0) }, click: function () { $parent.Cards.remove($data); }" />
                         </div>
                     </div>
                 </div>
@@ -60,9 +60,9 @@
                 <div class="pager-right" data-bind="click: function () { $root.pageChange(+1); }, visible: $data.Page() < $data.Pages()">&gt;</div>
                 <!-- ko foreach: CardsInfo -->
                 <div class="search-result">
-                    <img data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Card.Id).replace('__side__', 0) }" />
+                    <img class="card" data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Card.Id).replace('__side__', 0) }" />
                     <div class="owned-count" data-bind="text: $data.OwnedCount"></div>
-                    <div class="add-overlay">
+                    <div class="card add-overlay">
                         <button data-bind="click: function() { $root.addCard($data.Card); }">Add</button>
                     </div>
                 </div>

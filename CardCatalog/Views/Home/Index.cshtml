@@ -8,5 +8,5 @@
 
 @foreach (var card in Model)
 {
-    <a href="@Url.Action("details", "card", new { id = card.Id })"><img src="@Url.Action("Card", "Image", new { id = card.Id, side = 0 })" /></a>
+    <a href="@Url.Action("details", "card", new { id = card.Id })"><img class="card" src="@Url.Action("Card", "Image", new { id = card.Id, side = 0 })" /></a>
 }

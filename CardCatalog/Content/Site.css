@@ -332,3 +332,12 @@ nav, #menucontainer
 {
     width: 6em;
 }
+
+/* Styles for the rest of the site
+----------------------------------------------------------*/
+.card
+{
+    border-radius: 9px;
+    width: 223px;
+    height: 310px;
+}
