@@ -74,6 +74,20 @@ var deck = (function () {
             }
 
             return results;
+        }, vm),
+        ManaCosts: ko.computed(function () {
+            var costs = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+            var cols = this.Columns();
+            for (var i = 0; i < cols.length; i++) {
+                var cards = cols[i].Cards();
+                for (var c = 0; c < cards.length; c++) {
+                    var m = cards[c].NormalizedFaces()[0].ConvertedManaCost();
+                    costs[Math.min(m, costs.length - 1)]++;
+                }
+            }
+
+            return costs;
         }, vm)
     };
 

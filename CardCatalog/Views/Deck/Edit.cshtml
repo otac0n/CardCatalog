@@ -84,6 +84,18 @@
                         <tr><th>Total:</th><td data-bind="text: CardCount"></td></tr>
                     </tfoot>
                 </table>
+                <table>
+                    <thead>
+                        <tr><th>Mana Cost</th><th>Count</th></tr>
+                    </thead>
+                    <tbody data-bind="foreach: ManaCosts">
+                        <tr><td data-bind="text: $index() == $parent.ManaCosts().length - 1 ? $index() + '+' : $index()"></td><td data-bind="text: $data"></td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr><th>Total:</th><td data-bind="text: CardCount"></td></tr>
+                    </tfoot>
+                </table>
+
             </div>
         </div>
     </div>
