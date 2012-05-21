@@ -167,8 +167,11 @@ $(function () {
         });
     };
 
+    $("#tabs").tabs();
+    if (deck.Stats.CardCount() > 0) {
+        $("#tabs").tabs("select", "#organize-tab");
+    }
+
     visualSearch.searchBox.value("owned: true");
     search(1);
-
-    $("#tabs").tabs();
 });
