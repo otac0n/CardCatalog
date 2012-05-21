@@ -45,68 +45,12 @@
     border-radius: 6px;
 }
 
+#search-results
+{
+    width: 100%;
+}
+
 .pager-left, .pager-right
 {
-    width: 20px;
-    height: 650px;
-    background-color: #eee;
-    border: 1px solid #aaa;
-}
-
-.pager-left
-{
-    float: left;
-    margin-right: 10px;
-}
-
-.pager-right
-{
-    float: right;
-    margin-left: 10px;
-}
-
-.search-result
-{
-    display: inline-block;
-    position: relative;
-}
-
-.owned-count
-{
-    font-size: 12px;
-    position: absolute;
-    left: 23px;
-    top: 40px;
-    background: #fff;
-    border-radius: 3px;
-    border: 1px solid black;
-    padding: 3px;
-}
-
-.add-overlay
-{
-    display: none;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    background: none;
-    background: rgba(0, 0, 0, 0.3);
-
-    text-align: center;
-}
-
-.add-overlay button
-{
-    text-align: center;
-    filter: alpha(opacity=100);
-    opacity: 1.0;
-    position: relative;
-    top: 120px;
-}
-
-.search-result:hover .add-overlay
-{
-    display: block;
+    cursor: pointer;
 }

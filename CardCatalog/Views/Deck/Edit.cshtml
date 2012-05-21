@@ -56,20 +56,38 @@
         </div>
         <div id="search-tab">
             <div id="card-search"></div>
-            <div id="search-results">
-                <div class="pager-left" data-bind="click: function () { $root.pageChange(-1); }, visible: $data.Page() > 1">&lt;</div>
-                <div class="pager-right" data-bind="click: function () { $root.pageChange(+1); }, visible: $data.Page() < $data.Pages()">&gt;</div>
-                <!-- ko foreach: CardsInfo -->
-                <div class="search-result">
-                    <img class="card" data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Card.Id).replace('__side__', 0) }" />
-                    <div class="owned-count" data-bind="text: $data.OwnedCount"></div>
-                    <div class="card add-overlay">
-                        <button data-bind="click: function() { $root.addCard($data.Card); }">Add</button>
-                    </div>
-                </div>
-                <!-- /ko -->
-                <span data-bind="text: 'Page ' + $data.Page() + ' of ' + $data.Pages()"></span>
-            </div>
+            <table id="search-results">
+                <thead>
+                    <tr>
+                        <th>Info</th><th>P</th><th>T</th><th>Expansion</th><th>Owned</th><th></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: CardsInfo">
+                    <tr class="search-result">
+                        <td>
+                            <span data-bind="text: Card.NormalizedFaces[0].Name"></span> <span data-bind="text: Card.NormalizedFaces[0].ManaCost"></span><br />
+                            <span data-bind="text: Card.NormalizedFaces[0].Types"></span><br />
+                            <div data-bind="foreach: Card.NormalizedFaces[0].CardText">
+                                <span data-bind="text: $data"></span><br />
+                            </div>
+                        </td> <!-- <img class="card" data-bind="attr: { src: Urls.imageCard.replace('__id__', $data.Card.Id).replace('__side__', 0) }" /> -->
+                        <td data-bind="text: Card.NormalizedFaces[0].Power"></td>
+                        <td data-bind="text: Card.NormalizedFaces[0].Toughness"></td>
+                        <td data-bind="text: Card.Expansion"></td>
+                        <td data-bind="text: OwnedCount"></td>
+                        <td><button data-bind="click: function() { $root.addCard($data.Card); }">Add</button></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <a class="pager-left" data-bind="click: function () { $root.pageChange(-1); }, visible: $data.Page() > 1">&lt;</a>
+                            <span data-bind="text: 'Page ' + $data.Page() + ' of ' + $data.Pages()"></span>
+                            <a class="pager-right" data-bind="click: function () { $root.pageChange(+1); }, visible: $data.Page() < $data.Pages()">&gt;</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
         <div id="stats-tab" data-bind="with: Stats">
             <div>
