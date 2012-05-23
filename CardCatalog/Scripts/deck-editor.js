@@ -29,12 +29,12 @@ var deck = (function () {
     };
 
     var primaryTypes = [
-        { match: /creature/i, type: "Creature" },
-        { match: /instant/i, type: "Instant" },
+        { match: /creature|summon|eaturecray/i, type: "Creature" },
+        { match: /instant|interrupt/i, type: "Instant" },
         { match: /artifact/i, type: "Artifact" },
         { match: /sorcery/i, type: "Sorcery" },
         { match: /land/i, type: "Land" },
-        { match: /enchantment/i, type: "Enchantment" },
+        { match: /enchant(ment)?/i, type: "Enchantment" },
         { match: /planeswalker/i, type: "Planeswalker" },
     ];
 
@@ -61,10 +61,12 @@ var deck = (function () {
                     for (var p = 0; p < primaryTypes.length; p++) {
                         var pt = primaryTypes[p];
                         if (pt.match.test(t)) {
-                            types[pt.type] = (types[pt.type] || 0) + 1;
+                            t = pt.type;
                             break;
                         }
                     }
+
+                    types[t] = (types[t] || 0) + 1;
                 }
             }
 
