@@ -22,7 +22,7 @@ $(function () {
         minLength: 2,
         select: function (event, ui) {
             if (ui.item) {
-                window.location = Urls.cardDetails.replace('_id_', ui.item.id);
+                window.location = Urls.cardDetails.replace('__id__', ui.item.id);
             }
         }
     })

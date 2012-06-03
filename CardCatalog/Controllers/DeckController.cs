@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Mvc;
 using CardCatalog.Models;
 using CardCatalog.Models.Indexes;
-using Raven.Client;
 using Raven.Client.Linq;
 
 namespace CardCatalog.Controllers

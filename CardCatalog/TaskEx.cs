@@ -6,8 +6,8 @@ namespace CardCatalog
 {
     public static class TaskEx
     {
-        static readonly Task preCompletedTask = GetCompletedTask();
-        static readonly Task preCanceledTask = GetPreCanceledTask();
+        private static readonly Task preCompletedTask = GetCompletedTask();
+        private static readonly Task preCanceledTask = GetPreCanceledTask();
 
         public static Task Delay(int dueTimeMs, CancellationToken cancellationToken)
         {
