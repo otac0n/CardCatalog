@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Web.Mvc;
@@ -112,8 +110,33 @@ namespace CardCatalog.Controllers
                             break;
 
                         case "cost":
-                            var value = decimal.Parse(term.Value);
-                            searchQuery = searchQuery.Where(r => r.ConvertedManaCost == value);
+                            var value = term.Value.Trim();
+                            if (value.StartsWith(">="))
+                            {
+                                var cost = decimal.Parse(value.Substring(2).Trim());
+                                searchQuery = searchQuery.Where(r => r.ConvertedManaCost >= cost);
+                            }
+                            else if (value.StartsWith(">"))
+                            {
+                                var cost = decimal.Parse(value.Substring(1).Trim());
+                                searchQuery = searchQuery.Where(r => r.ConvertedManaCost > cost);
+                            }
+                            else if (value.StartsWith("<="))
+                            {
+                                var cost = decimal.Parse(value.Substring(2).Trim());
+                                searchQuery = searchQuery.Where(r => r.ConvertedManaCost <= cost);
+                            }
+                            else if (value.StartsWith("<"))
+                            {
+                                var cost = decimal.Parse(value.Substring(1).Trim());
+                                searchQuery = searchQuery.Where(r => r.ConvertedManaCost < cost);
+                            }
+                            else
+                            {
+                                var cost = decimal.Parse(value);
+                                searchQuery = searchQuery.Where(r => r.ConvertedManaCost == cost);
+                            }
+
                             break;
 
                         case "color":

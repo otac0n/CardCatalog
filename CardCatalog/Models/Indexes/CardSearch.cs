@@ -69,7 +69,7 @@ namespace CardCatalog.Models.Indexes
             this.Index(r => r.Rarity, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Artist, FieldIndexing.Analyzed);
             this.Index(r => r.Colors, FieldIndexing.Analyzed);
-            this.Index(r => r.ConvertedManaCost, FieldIndexing.NotAnalyzed);
+            this.Index(r => r.ConvertedManaCost, FieldIndexing.Analyzed);
             this.Index(r => r.Name, FieldIndexing.Analyzed);
             this.Index(r => r.Power, FieldIndexing.NotAnalyzed);
             this.Index(r => r.Text, FieldIndexing.Analyzed);
