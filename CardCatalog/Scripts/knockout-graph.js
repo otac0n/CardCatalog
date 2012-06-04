@@ -6,26 +6,34 @@
 /// <reference path="~/Scripts/g.line.js" />
 /// <reference path="~/Scripts/g.pie.js" />
 
-ko.bindingHandlers.graph = {
-    init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-        var value = ko.utils.unwrapObservable(valueAccessor());
-
-        var r = Raphael(element, value.width || 100, value.height || 100);
-        element.Raphael = r;
-
+ko.bindingHandlers.graph = (function () {
+    var createGraph = function (r, value) {
         var data = ko.utils.unwrapObservable(value.data);
         switch (value.type) {
             case 'pie':
-                element.Chart = r.piechart(value.width / 2, value.height / 2, value.radius, data);
-                break;
+                return r.piechart(value.width / 2, value.height / 2, value.radius, data);
             case 'bar':
-                r.barchart(0, 0, value.width, value.height, data);
-                break;
+                return r.barchart(0, 0, value.width, value.height, data);
         }
-    },
-    update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-        var value = ko.utils.unwrapObservable(valueAccessor());
-        var r = element.Raphael;
-        var c = element.Chart;
-    }
-};
+    };
+
+    return {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            var value = ko.utils.unwrapObservable(valueAccessor());
+            var r = Raphael(element, value.width || 100, value.height || 100);
+            element.Raphael = r;
+            element.Chart = createGraph(r, value);
+        },
+        update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            var value = ko.utils.unwrapObservable(valueAccessor());
+            var r = element.Raphael;
+
+            var c = element.Chart;
+            if (c) {
+                c.remove();
+            }
+
+            element.Chart = createGraph(r, value);
+        }
+    };
+})();
