@@ -75,6 +75,20 @@ var deck = (function () {
                 results.push({ Type: t, Count: types[t] });
             }
 
+            results.sort(function (a, b) {
+                if (a.Count > b.Count) {
+                    return -1;
+                } else if (a.Count < b.Count) {
+                    return +1;
+                } else if (a.Type < b.Type) {
+                    return -1;
+                } else if (a.Type < b.Type) {
+                    return +1;
+                } else {
+                    return 0;
+                }
+            });
+
             return results;
         }, vm),
         ManaCosts: ko.computed(function () {
