@@ -9,11 +9,12 @@
 ko.bindingHandlers.graph = (function () {
     var createGraph = function (r, value) {
         var data = ko.utils.unwrapObservable(value.data);
+        var options = ko.utils.unwrapObservable(value.options);
         switch (value.type) {
             case 'pie':
-                return r.piechart(value.width / 2, value.height / 2, value.radius, data);
+                return r.piechart(value.x || value.width / 2, value.y || value.height / 2, value.radius || (value.height / 2), data, options);
             case 'bar':
-                return r.barchart(0, 0, value.width, value.height, data);
+                return r.barchart(0, 0, value.width, value.height, data, options);
         }
     };
 
