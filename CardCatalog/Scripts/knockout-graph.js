@@ -22,12 +22,10 @@ ko.bindingHandlers.graph = (function () {
             var value = ko.utils.unwrapObservable(valueAccessor());
             var r = Raphael(element, value.width || 100, value.height || 100);
             element.Raphael = r;
-            element.Chart = createGraph(r, value);
         },
         update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var value = ko.utils.unwrapObservable(valueAccessor());
             var r = element.Raphael;
-
             var c = element.Chart;
             if (c) {
                 c.remove();

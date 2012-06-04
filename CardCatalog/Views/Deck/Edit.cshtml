@@ -84,7 +84,7 @@
                         <tr><th>Total:</th><td data-bind="text: CardCount"></td></tr>
                     </tfoot>
                 </table>
-                <div data-bind="graph: { type: 'pie', width: 100, height: 100, radius: 50, data: CardTypes }"></div>
+                <div data-bind="graph: { type: 'pie', width: 100, height: 100, radius: 50, data: _.pluck(CardTypes(), 'Count') }"></div>
                 <table>
                     <thead>
                         <tr><th>Mana Cost</th><th>Count</th></tr>
