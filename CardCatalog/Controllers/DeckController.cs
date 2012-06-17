@@ -57,8 +57,12 @@ namespace CardCatalog.Controllers
             DeckViewModel viewModel;
             using (var session = MvcApplication.DocumentStore.OpenSession())
             {
-                ViewBag.Expansions = session.Query<ExpansionCardCount.Result, ExpansionCardCount>().Take(1000).ToList();
                 var deck = session.Load<Deck>(id);
+
+                if (deck == null)
+                {
+                    return HttpNotFound();
+                }
 
                 if (deck.Name.Slugify() != slug)
                 {
@@ -68,9 +72,10 @@ namespace CardCatalog.Controllers
                 var cards = session.Load<Card>(deck.Columns.SelectMany(c => c.CardIds).Distinct()).ToDictionary(c => "cards/" + c.Id, c => c);
 
                 viewModel = DeckViewModel.Convert(deck, cards);
+                ViewBag.Expansions = session.Query<ExpansionCardCount.Result, ExpansionCardCount>().Take(1000).ToList();
             }
 
-            return View((DeckViewModel)viewModel);
+            return View(viewModel);
         }
 
         [HttpPost]
