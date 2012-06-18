@@ -1,0 +1,27 @@
+﻿@model CardCatalog.Models.FormatViewModel
+
+@{
+    ViewBag.Title = "Create a Format";
+    var expansions = (List<CardCatalog.Models.Indexes.ExpansionCardCount.Result>)ViewBag.Expansions;
+}
+
+@section scripts {
+    <script>
+        var expansions = @Html.Json(expansions);
+        var initialFormat = @Html.Json(Model);
+    </script>
+}
+@section styles {
+    <link href="@Url.Content("~/Content/deck-editor.css")" rel="stylesheet" type="text/css" />
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Format</legend>
+        @Html.LabelFor(m => m.Name)
+        @Html.EditorFor(m => m.Name) @Html.ValidationMessageFor(m => m.Name)
+    </fieldset>
+}

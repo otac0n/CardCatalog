@@ -1,0 +1,29 @@
+﻿@model IEnumerable<CardCatalog.Models.Format>
+
+@{
+    ViewBag.Title = "Format Index";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>
+            Name
+        </th>
+    </tr>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.ActionLink("Edit", "edit", new { id = item.Id, slug = item.Name.Slugify() })
+            </td>
+            <td>
+                @(string.IsNullOrEmpty(item.Name) ? "(no name)" : item.Name)
+            </td>
+        </tr>
+    }
+</table>
