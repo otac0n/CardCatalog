@@ -5,4 +5,4 @@
 *.ncrunch*
 *.[Cc]ache
 *.Publish.xml
-/CardCatalog/Images/
+/CardCatalog/Images/*.*
