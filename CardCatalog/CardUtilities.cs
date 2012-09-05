@@ -119,6 +119,7 @@ namespace CardCatalog
                 cost == "Green" ? "{G}" :
                 cost == "Green or Blue" ? "{GU}" :
                 cost == "Green or White" ? "{GW}" :
+                cost == "Phyrexian" ? "{P}" :
                 cost == "Phyrexian Black" ? "{BP}" :
                 cost == "Phyrexian Blue" ? "{UP}" :
                 cost == "Phyrexian Green" ? "{GP}" :
