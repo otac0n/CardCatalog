@@ -118,7 +118,7 @@
 <div class="card-ownership">
 Owned: @ownerships.Count
 
-@using (Html.BeginForm("add", "card", new { id = Model.Id }))
+@using (Html.BeginForm("add", "card", new { id = Model.Id, autocomplete = "off" }))
 {
     <input type="text" id="quantity" name="quantity" value="1" /> <button type="submit">Add</button>
 }
