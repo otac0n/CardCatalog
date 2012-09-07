@@ -16,6 +16,8 @@ namespace CardCatalog.Models
 
         public int Id { get; set; }
 
+        public string OriginalCardId { get; set; }
+
         public string Expansion { get; set; }
 
         public string Rarity { get; set; }

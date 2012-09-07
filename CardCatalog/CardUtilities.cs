@@ -92,9 +92,19 @@ namespace CardCatalog
             var printedFaces = (from HtmlNode faceNode in printedFaceNodes
                                 select ReadFace(faceNode)).ToList();
 
+            var originalVersionsAnchors = normalizedDoc.DocumentNode.SelectNodes("(//div[@class='label' and text()[contains(.,'All Sets:')]]/following-sibling::*[1]/div)[1]/a");
+            var originalCardId = originalVersionsAnchors == null
+                ? normalizedFaces.First().Id
+                : (from HtmlNode a in originalVersionsAnchors
+                   let href = a.Attributes["href"].Value
+                   let originalId = int.Parse(Regex.Match(href, @"multiverseid=(?<id>\d+)").Groups["id"].Value)
+                   orderby originalId
+                   select originalId).First();
+
             return new Card
             {
                 Id = normalizedFaces.First().Id,
+                OriginalCardId = "cards/" + originalCardId,
                 Expansion = expansion,
                 Rarity = rarity,
                 NormalizedFaces = normalizedFaces,
