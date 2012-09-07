@@ -7,7 +7,7 @@
         public Format()
         {
             this.Expansions = new List<string>();
-            this.BannedCards = new List<string>();
+            this.BannedCardIds = new List<string>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@
 
         public List<string> Expansions { get; set; }
 
-        public List<string> BannedCards { get; set; }
+        public List<string> BannedCardIds { get; set; }
     }
 }

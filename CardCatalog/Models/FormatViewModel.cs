@@ -26,7 +26,7 @@
                 Id = format.Id,
                 Name = format.Name,
                 Expansions = format.Expansions.ToList(),
-                BannedCards = format.BannedCards.Select(c => cards[c]).ToList(),
+                BannedCards = format.BannedCardIds.Select(c => cards[c]).ToList(),
             };
         }
     }

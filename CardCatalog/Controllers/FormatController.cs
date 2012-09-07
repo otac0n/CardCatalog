@@ -68,7 +68,7 @@ namespace CardCatalog.Controllers
                     return RedirectToAction("edit", new { id = format.Id, slug = format.Name.Slugify() });
                 }
 
-                var cards = session.Load<Card>(format.BannedCards.Distinct()).ToDictionary(c => "cards/" + c.Id, c => c);
+                var cards = session.Load<Card>(format.BannedCardIds.Distinct()).ToDictionary(c => "cards/" + c.Id, c => c);
 
                 viewModel = FormatViewModel.Convert(format, cards);
                 ViewBag.Expansions = session.Query<ExpansionCardCount.Result, ExpansionCardCount>().Take(1000).ToList();
