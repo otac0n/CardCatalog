@@ -17,7 +17,7 @@ namespace CardCatalog.Controllers
                     .Include(o => o.CardId)
                     .ToList();
 
-                var cards = session.Load<Card>(ownedCards.Select(o => o.CardId));
+                var cards = session.Load<Card>(ownedCards.Select(o => o.CardId)).Where(c => c != null).ToList();
 
                 return View(cards);
             }
